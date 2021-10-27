@@ -1,24 +1,29 @@
 <template>
 
-  <div>
+  <div id="myquizes">
     <h1>My Quizes</h1>
 
-    <ul>
-      <li class="quizName" v-for="quiz in quizes" v-bind:key="quiz.quiz_id" v-on:click="clickOnQuiz(quiz.quiz_id)">
-        {{quiz.quiz_name }}
-        <ul v-if="activeQuizId === quiz.quiz_id">
-          <li v-for="question in questions"  v-bind:key="question.question_id">
-            <p>{{ question.question }}</p>
-            <p><input type="checkbox" id="1">{{ question.answer1 }}</p>
-            <p><input type="checkbox">{{ question.answer2 }}</p>
-            <p><input type="checkbox">{{ question.answer3 }}</p>
-            <p><input type="checkbox">{{ question.answer4 }}</p>
-          </li>
-        </ul>
-      </li>
+    <section class="quizContainer">
+      <ul class="quizName" v-for="quiz in quizes" v-bind:key="quiz.quiz_id" v-on:click="clickOnQuiz(quiz.quiz_id)">
+        {{ quiz.quiz_name }}
 
-    </ul>
+        <li v-for="question in questions" v-bind:key="question.question_id" >
+          <form v-on:submit.prevent="correctAnswers(question.correct_answer)">
+            <div v-if="quiz.quiz_id === activeQuizId">
+              <p>{{ question.question }}</p>
+              <p><input type="radio" name="answer" value="1" v-model="test">{{ question.answer1 }}</p>
+              <p><input type="radio" name="answer" value="2" v-model="test">{{ question.answer2 }}</p>
+              <p><input type="radio" name="answer" value="3" v-model="test">{{ question.answer3 }}</p>
+              <p><input type="radio" name="answer" value="4" v-model="test">{{ question.answer4 }}</p>
+            </div>
+            <button v-if="quiz.quiz_id === activeQuizId">Test</button>
+          </form>
+        </li>
 
+
+      </ul>
+
+    </section>
   </div>
 </template>
 
@@ -26,12 +31,13 @@
 
 export default {
   name: "MyQuizes",
-
   data: function () {
     return {
       quizes: [],
       questions: [],
-      activeQuizId: ''
+      activeQuizId: '',
+      chosenAnswer: '',
+      test: ''
     }
   },
   mounted() {
@@ -56,6 +62,10 @@ export default {
             console.log(data.questions);
             this.questions = data.questions;
           });
+    },
+    correctAnswers: function (question) {
+      console.log(question);
+      console.log(this.test);
     }
   },
 
@@ -63,9 +73,35 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
+#myquizes {
+  padding-top: 100px;
+}
+
+.quizContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.quizName {
+  position: relative;
+  justify-self: center;
+  background-color: white;
+  padding: 15px;
+  width: auto;
+  margin: 10px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
 li {
   cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  text-align: center;
 }
 
 .quizName {
