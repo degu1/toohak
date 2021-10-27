@@ -59,7 +59,7 @@ h1 {
   width: auto;
 }
 
-#logo span {
+.logo span {
   color: black;
 }
 
@@ -89,10 +89,7 @@ h1 {
   display: none;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+
 
 .backgroundGradientLeft {
   top: 0;
