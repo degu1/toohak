@@ -4,28 +4,48 @@
     <h1>My Quizes</h1>
 
     <section class="quizContainer">
-      <ul class="quizName" v-for="quiz in quizes" v-bind:key="quiz.quiz_id" v-on:click="clickOnQuiz(quiz.quiz_id)">
-        {{ quiz.quiz_name }}
-
-        <li v-for="question in questions" v-bind:key="question.question_id" >
-          <form v-on:submit.prevent="correctAnswers(question.correct_answer)">
+      <ul>
+        <li class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
+          {{ quiz.quiz_name }}
+<!--          <p>{{ activeQuestions[questionIndex].}}</p>-->
             <div v-if="quiz.quiz_id === activeQuizId">
-              <p>{{ question.question }}</p>
-              <p><input type="radio" name="answer" value="1" v-model="test">{{ question.answer1 }}</p>
-              <p><input type="radio" name="answer" value="2" v-model="test">{{ question.answer2 }}</p>
-              <p><input type="radio" name="answer" value="3" v-model="test">{{ question.answer3 }}</p>
-              <p><input type="radio" name="answer" value="4" v-model="test">{{ question.answer4 }}</p>
+              <button v-on:click="activateQuestions(activeQuestions[questionIndex].question_id)">Start quiz</button>
+              <form v-on:submit.prevent="checkAnswer">
+                <label>{{ activeQuestions[questionIndex].question }}</label>
+                <div v-for="answer of activeAnswers" v-bind:key="answer">
+                  <input type="radio" name="answer" v-model="svar" :value="answer.answer">
+                  {{ answer.answer }}
+                </div>
+                <button>Next</button>
+              </form>
             </div>
-            <button v-if="quiz.quiz_id === activeQuizId">Test</button>
-          </form>
+
         </li>
-
-
       </ul>
-
     </section>
+    <p>score= {{ score }}</p>
   </div>
+
 </template>
+
+
+<!--<form>-->
+<!--<div v-if="questionIndex < questions.length">-->
+<!--  <div v-for="question of questions" v-bind:key="question.question">-->
+
+<!--    <label>{{ questions[questionIndex].question }}</label>-->
+<!--    <div v-for="answer of answers" v-bind:key="answer">-->
+<!--      <div v-if="answer.question_id === questionIndex+1">-->
+<!--        <input type="radio" name="answer" v-model="svar" :value="answer.answer">-->
+<!--        {{ answer.answer }}-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <button v-on:click="checkAnswer()">check</button>-->
+
+<!--  </div>-->
+<!--</div>-->
+<!--</form>-->
+
 
 <script>
 
@@ -34,10 +54,15 @@ export default {
   data: function () {
     return {
       quizes: [],
-      questions: [],
+      activeQuestions: [{}],
+      activeQuestion: '',
+      activeAnswers: [{}],
+      questionIndex: 0,
       activeQuizId: '',
-      chosenAnswer: '',
-      test: ''
+      activeQuestionId: '',
+      correct_answer: '',
+      svar: '',
+      score: 0
     }
   },
   mounted() {
@@ -52,7 +77,7 @@ export default {
   },
 
   methods: {
-    clickOnQuiz: function (quiz_id) {
+    activateQuiz: function (quiz_id) {
       this.activeQuizId = quiz_id;
       fetch('http://127.0.0.1:3000/questions/' + quiz_id)
           .then((response) => {
@@ -60,12 +85,30 @@ export default {
           })
           .then((data) => {
             console.log(data.questions);
-            this.questions = data.questions;
+            this.activeQuestions = data.questions;
+          });
+
+    },
+    activateQuestions: function (question_id) {
+      this.activeQuestionId = question_id;
+      fetch('http://127.0.0.1:3000/answers/' + question_id)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data.answers);
+            this.activeAnswers = data.answers;
           });
     },
-    correctAnswers: function (question) {
-      console.log(question);
-      console.log(this.test);
+    checkAnswer: function () {
+
+      var correctAnswer = this.activeQuestions[this.questionIndex].correct_answer;
+      if (correctAnswer === this.svar) {
+        this.score++;
+      }
+      this.questionIndex++;
+      console.log(this.activeQuestions[this.questionIndex].question_id)
+      this.activateQuestions(this.activeQuestions[this.questionIndex].question_id);
     }
   },
 
