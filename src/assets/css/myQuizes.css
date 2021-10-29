@@ -1,33 +1,31 @@
 
 #myquizes {
-    padding-top: 100px;
+    padding: 100px 0 0 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+
 }
 
 #myQuizName {
     color: white;
     margin-bottom: 20px;
     font-size: 1.6em;
-
 }
 
 .quizContainer {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-    margin: 0;
-    padding: 0;
+    display: grid;
+    padding: 0 20px;
 }
 
 .quizName {
-    position: relative;
     justify-self: center;
     background-color: white;
     padding: 10px;
-    width: auto;
+    width: 100%;
     margin: 10px;
     border-radius: 20px;
     cursor: pointer;
-
 }
 
 li {
@@ -37,7 +35,6 @@ li {
 ul {
     list-style-type: none;
     text-align: center;
-
 }
 
 .quizName {
@@ -58,6 +55,13 @@ button {
     padding: 10px 20px;
     border-style: none;
     margin: 15px 30% 0px 30%;
-    position: relative;
     cursor: pointer;
+}
+
+/* Tablet */
+@media screen and (min-width: 768px) {
+    .quizName {
+        width: 100%;
+        max-width: 700px;
+    }
 }

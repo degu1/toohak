@@ -4,7 +4,7 @@
     <ul id="question" v-for="(question, qIndex) in questions" v-bind:key="question.question_id"
         v-on:load="getNewAnswers">
 
-      <section id="questionNumberContainer" :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'), (scores[question.question_id-1] === 0 ? 'questionNumberWrongAnswer' : 'questionNumberContainer')]" ><h3>{{ qIndex + 1 }}</h3></section>
+      <section id="questionNumberContainer" :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'), (scores[qIndex] === 0 ? 'questionNumberWrongAnswer' : 'questionNumberContainer')]" ><h3>{{ qIndex + 1 }}</h3></section>
       <div v-if="questionIndex == qIndex" id="topBoarderQuestion"></div>
       <span>{{ question.question }}</span>
       <div >
