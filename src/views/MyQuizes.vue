@@ -55,9 +55,7 @@ export default {
       // `route` is either a string or object
       router.push("/quizes/" + quiz_id);
     }
-  },
-
-
+  }
 }
 </script>
 
