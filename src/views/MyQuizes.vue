@@ -1,22 +1,15 @@
 <template>
 
   <div id="myquizes">
-    <h1>My Quizes</h1>
-
+    <h1 id="myQuizName">My Quizes</h1>
     <section class="quizContainer">
-      <ul>
-        <li class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id">
-
-          <p v-on:click="activateQuiz(quiz.quiz_id)">{{ quiz.quiz_name }}</p>
-
-          <div v-if="quiz.quiz_id === activeQuizId">
-
-
-            <button v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
-
-
-          </div>
-        </li>
+      <ul class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
+          <li >
+            {{ quiz.quiz_name }}
+            <div v-if="quiz.quiz_id === activeQuizId">
+              <button v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
+            </div>
+          </li>
       </ul>
     </section>
   </div>
@@ -59,39 +52,8 @@ export default {
 }
 </script>
 
-<style>
+<style >
 
-#myquizes {
-  padding-top: 100px;
-}
-
-.quizContainer {
-  display: flex;
-  flex-direction: column;
-}
-
-.quizName {
-  position: relative;
-  justify-self: center;
-  background-color: white;
-  padding: 15px;
-  width: auto;
-  margin: 10px;
-  border-radius: 50px;
-  cursor: pointer;
-}
-
-li {
-  cursor: pointer;
-}
-
-ul {
-  list-style: none;
-  text-align: center;
-}
-
-.quizName {
-  font-size: large;
-}
+@import '../assets/css/myQuizes.css';
 
 </style>
