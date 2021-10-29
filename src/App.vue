@@ -1,16 +1,19 @@
 <template>
-  <div id="app" >
-    <div class="backgroundGradientLeft" v-on:click="burgerMenuClose"></div>
-    <div class="backgroundGradientRight" v-on:click="burgerMenuClose"></div>
-    <div id="backgroundFading"></div>
+  <div id="app">
+    <div class="backgroundGradientLeft"></div>
+    <div class="backgroundGradientRight"></div>
+    <div id="backgroundFading" v-on:click="burgerMenuClose"></div>
+
     <nav id="nav">
       <h1 class="logo">!<span>toohak</span></h1>
       <img src="./assets/burgerMenu.png" id="burger-menu" v-on:click="burgerMenuOpen">
-      <section class="links">
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
-        <router-link to="/myQuizes">My quizes</router-link>
-      </section>
+      <div class="linksContainer">
+        <section class="links">
+          <router-link to="/">Home</router-link>
+          <router-link to="/about">About</router-link>
+          <router-link to="/myQuizes">My quizes</router-link>
+        </section>
+      </div>
 
     </nav>
     <router-view/>
@@ -29,11 +32,15 @@ export default {
   methods: {
     burgerMenuOpen: function () {
       const links = document.querySelector('.links');
+      const backgroundFading = document.querySelector('#backgroundFading');
       links.classList.add('open');
+      backgroundFading.classList.add('onClick');
     },
     burgerMenuClose: function () {
       const links = document.querySelector('.links');
+      const backgroundFading = document.querySelector('#backgroundFading');
       links.classList.remove('open');
+      backgroundFading.classList.remove('onClick');
     }
   },
 }
