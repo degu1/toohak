@@ -5,64 +5,35 @@
 
     <section class="quizContainer">
       <ul>
-        <li class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
-          {{ quiz.quiz_name }}
-<!--          <p>{{ activeQuestions[questionIndex].}}</p>-->
-            <div v-if="quiz.quiz_id === activeQuizId">
-              <button v-on:click="activateQuestions(activeQuestions[questionIndex].question_id)">Start quiz</button>
-              <form v-on:submit.prevent="checkAnswer">
-                <label>{{ activeQuestions[questionIndex].question }}</label>
-                <div v-for="answer of activeAnswers" v-bind:key="answer">
-                  <input type="radio" name="answer" v-model="svar" :value="answer.answer">
-                  {{ answer.answer }}
-                </div>
-                <button>Next</button>
-              </form>
-            </div>
+        <li class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id">
 
+          <p v-on:click="activateQuiz(quiz.quiz_id)">{{ quiz.quiz_name }}</p>
+
+          <div v-if="quiz.quiz_id === activeQuizId">
+
+
+            <button v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
+
+
+          </div>
         </li>
       </ul>
     </section>
-    <p>score= {{ score }}</p>
   </div>
 
 </template>
 
 
-<!--<form>-->
-<!--<div v-if="questionIndex < questions.length">-->
-<!--  <div v-for="question of questions" v-bind:key="question.question">-->
-
-<!--    <label>{{ questions[questionIndex].question }}</label>-->
-<!--    <div v-for="answer of answers" v-bind:key="answer">-->
-<!--      <div v-if="answer.question_id === questionIndex+1">-->
-<!--        <input type="radio" name="answer" v-model="svar" :value="answer.answer">-->
-<!--        {{ answer.answer }}-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <button v-on:click="checkAnswer()">check</button>-->
-
-<!--  </div>-->
-<!--</div>-->
-<!--</form>-->
-
-
 <script>
+
+import router from "../router";
 
 export default {
   name: "MyQuizes",
   data: function () {
     return {
       quizes: [],
-      activeQuestions: [{}],
-      activeQuestion: '',
-      activeAnswers: [{}],
-      questionIndex: 0,
-      activeQuizId: '',
-      activeQuestionId: '',
-      correct_answer: '',
-      svar: '',
-      score: 0
+      activeQuizId: ''
     }
   },
   mounted() {
@@ -79,36 +50,10 @@ export default {
   methods: {
     activateQuiz: function (quiz_id) {
       this.activeQuizId = quiz_id;
-      fetch('http://127.0.0.1:3000/questions/' + quiz_id)
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data.questions);
-            this.activeQuestions = data.questions;
-          });
-
     },
-    activateQuestions: function (question_id) {
-      this.activeQuestionId = question_id;
-      fetch('http://127.0.0.1:3000/answers/' + question_id)
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data.answers);
-            this.activeAnswers = data.answers;
-          });
-    },
-    checkAnswer: function () {
-
-      var correctAnswer = this.activeQuestions[this.questionIndex].correct_answer;
-      if (correctAnswer === this.svar) {
-        this.score++;
-      }
-      this.questionIndex++;
-      console.log(this.activeQuestions[this.questionIndex].question_id)
-      this.activateQuestions(this.activeQuestions[this.questionIndex].question_id);
+    changeRoute: function (quiz_id) {
+      // `route` is either a string or object
+      router.push("/quizes/" + quiz_id);
     }
   },
 
