@@ -4,13 +4,17 @@
     <ul id="question" v-for="(question, qIndex) in questions" v-bind:key="question.question_id"
         v-on:load="getNewAnswers">
 
-      <section id="questionNumberContainer" :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'), (scores[qIndex] === 0 ? 'questionNumberWrongAnswer' : 'questionNumberContainer')]" ><h3>{{ qIndex + 1 }}</h3></section>
+      <section id="questionNumberContainer"
+               :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'), (scores[qIndex] === 0 ? 'questionNumberWrongAnswer' : 'questionNumberContainer')]">
+        <h3>{{ qIndex + 1 }}</h3></section>
       <div v-if="questionIndex == qIndex" id="topBoarderQuestion"></div>
       <span>{{ question.question }}</span>
-      <div >
-        <div v-if="questionIndex == qIndex" >
-          <form id="answerForm" v-on:submit.prevent="checkAnswer(question.correct_answer)">
-            <li v-for="choice of choices" v-bind:key="choice.answer_id" >
+      <div>
+        <div v-if="questionIndex == qIndex">
+
+<!--          Ändra userId från hårdkodat till en variabel när den existerar på raden nedan-->
+          <form id="answerForm" v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, 11)">
+            <li v-for="choice of choices" v-bind:key="choice.answer_id">
 
               <div id="answer" v-if="choice.question_id === question.question_id">
                 <input type="radio" name="answer" v-model="answer" :value="choice.answer">
@@ -71,14 +75,24 @@ export default {
         });
   },
   methods: {
-    checkAnswer: function (correctAnswer) {
+    checkAnswer: function (correctAnswer, questionId, userId) {
+      let rightOrWrong = 0;
       if (correctAnswer === this.answer) {
+        rightOrWrong = 1;
         this.scores[this.questionIndex] = 1;
       } else {
         this.scores[this.questionIndex] = 0;
       }
       this.questionIndex++;
+      var jsonBody = '{"result":' + rightOrWrong + ', "question_id":' + questionId + ', "user_id":' + userId + '}'
+
+      fetch('http://127.0.0.1:3000/result/', {
+        method: 'POST',
+        body: jsonBody,
+        headers: {'Content-Type': 'application/json'}
+      })
     },
+
     getNewAnswers: function () {
 
     },
