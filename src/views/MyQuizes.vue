@@ -4,14 +4,15 @@
     <h1 id="myQuizName">My Quizes</h1>
     <section class="quizContainer">
       <ul class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
-          <li>
-            {{ quiz.quiz_name }}
-            <div v-if="quiz.quiz_id === activeQuizId">
-              <button v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
-            </div>
-          </li>
+        <li>
+          {{ quiz.quiz_name }}
+          <div v-if="quiz.quiz_id === activeQuizId">
+            <button v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
+          </div>
+        </li>
       </ul>
     </section>
+
   </div>
 
 </template>
@@ -52,7 +53,7 @@ export default {
 }
 </script>
 
-<style >
+<style>
 
 @import '../assets/css/myQuizes.css';
 
