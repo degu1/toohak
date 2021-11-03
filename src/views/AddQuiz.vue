@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    addNewQuiz: async function () {
+    addNewQuiz:  function () {
       fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName, {
         method: 'POST'
       }).then((response) => {
@@ -52,31 +52,42 @@ export default {
           this.quizId = tempText.quiz_id;
         })
       })
-
       this.insertChoices();
 
-
       this.parseJsonBody();
-
     },
+
     insertChoices: function () {
+
       this.choices.push(this.choiceOne)
       this.choices.push(this.choiceTwo)
       this.choices.push(this.choiceThree)
       this.choices.push(this.choiceFour)
+
     },
-    parseJsonBody: async function () {
-      var question =  { quiz_id: this.quizId, question: this.question, correct_answer: this.rightAnswer, answers: [this.choices]}
-      var jsonQuestion = JSON.stringify(question);
-      console.log(jsonQuestion)
-      fetch('http://127.0.0.1:3000/quiz_question/',{
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: jsonQuestion
-      })
+    parseJsonBody:  function () {
+
+      if(this.quizId !== 0) {
+        var question = {
+          quiz_id: this.quizId,
+          question: this.question,
+          correct_answer: this.rightAnswer,
+          answers: [{"answer": this.choiceOne}, {"answer": this.choiceTwo}, {"answer": this.choiceThree}, {"answer": this.choiceFour}]
+        }
+        var jsonQuestion = JSON.stringify(question);
+        console.log(jsonQuestion)
+        fetch('http://127.0.0.1:3000/quiz_question/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: jsonQuestion
+        })
+        return;
+      }
+      setTimeout(this.parseJsonBody, 100)
     }
 
-  }
+  },
+
 
 }
 </script>
