@@ -10,7 +10,7 @@
       <div class="linksContainer">
         <section class="links">
           <router-link to="/">Home</router-link>
-          <router-link to="/about">About</router-link>
+          <router-link to="/addQuiz">Add quiz</router-link>
           <router-link to="/myQuizes">My quizes</router-link>
         </section>
       </div>
