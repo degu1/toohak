@@ -4,7 +4,15 @@
     <form v-on:submit.prevent="addNewQuiz">
       <label for="quizName">Quiz Name</label>
       <input type="text" v-model="quizName">
-
+      <button v-on:click="updateQuizes()">Add quiz</button>
+    </form>
+    <ul>
+      <li v-for="quiz in quizes" v-bind:key="quiz.quiz_id" v-on:click="setActiveQuizId(quiz), getQuestions()">
+        {{ quiz.quiz_name }}
+      </li>
+    </ul>
+    <form v-on:submit.prevent="addNewQuestion">
+      <p>Quiz id: {{ activeQuizId }}</p>
       <label for="questionName">Question</label>
       <input type="text" id="questionName" v-model="question">
 
@@ -17,9 +25,13 @@
       <label for="rightAnswer">Right answer</label>
       <input type="text" id="rightAnswer" v-model="rightAnswer">
 
-      <button>Add quiz</button>
+      <button>Add question</button>
     </form>
-    <p>{{ this.quizId }}</p>
+    <ul>
+      <li v-for="question in activeQuestions" v-bind:key="question.question_id">
+        {{question.question}}
+      </li>
+    </ul>
 
   </div>
 </template>
@@ -39,11 +51,35 @@ export default {
       choiceFour: '',
       choices: [],
       rightAnswer: '',
-      jsonBody: ''
+      jsonBody: '',
+      quizes: [],
+      activeQuizId: '',
+      activeQuestions: []
+
     }
+  }, mounted() {
+    fetch('http://127.0.0.1:3000/quiznames')
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data.quizes);
+          this.quizes = data.quizes;
+        });
   },
   methods: {
-    addNewQuiz:  function () {
+    updateQuizes: function () {
+      fetch('http://127.0.0.1:3000/quiznames')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data.quizes);
+            this.quizes = data.quizes;
+          })
+    },
+
+    addNewQuiz: function () {
       fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName, {
         method: 'POST'
       }).then((response) => {
@@ -52,9 +88,9 @@ export default {
           this.quizId = tempText.quiz_id;
         })
       })
-      this.insertChoices();
 
-      this.parseJsonBody();
+      //this.insertChoices();
+      //this.addNewQuestion();
     },
 
     insertChoices: function () {
@@ -65,11 +101,13 @@ export default {
       this.choices.push(this.choiceFour)
 
     },
-    parseJsonBody:  function () {
+    addNewQuestion: function () {
+      this.choices = []
+      this.insertChoices()
 
-      if(this.quizId !== 0) {
+
         var question = {
-          quiz_id: this.quizId,
+          quiz_id: this.activeQuizId,
           question: this.question,
           correct_answer: this.rightAnswer,
           answers: [{"answer": this.choiceOne}, {"answer": this.choiceTwo}, {"answer": this.choiceThree}, {"answer": this.choiceFour}]
@@ -81,9 +119,22 @@ export default {
           headers: {'Content-Type': 'application/json'},
           body: jsonQuestion
         })
-        return;
-      }
-      setTimeout(this.parseJsonBody, 100)
+
+
+        setTimeout(this.getQuestions,10)
+    },
+    setActiveQuizId: function (quiz) {
+      this.activeQuizId = quiz.quiz_id
+    },
+    getQuestions: function (){
+      fetch('http://127.0.0.1:3000/questions/' + this.activeQuizId)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data.questions);
+            this.activeQuestions = data.questions;
+          });
     }
 
   },
