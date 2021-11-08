@@ -40,12 +40,18 @@
         <button>Add question</button>
       </form>
       <button v-on:click="activeQuizName=''">Back</button>
+
       <h2>Questions</h2>
-      <ul class="formAddItemContainer" id="questionListContainer">
+      <ul  class="formAddItemContainer" id="questionListContainer">
+        <section v-if="this.activeQuestions.length != 0">
         <li id="questionList" v-for="question in activeQuestions" v-bind:key="question.question_id">
           {{ question.question }}
           <img src="../assets/remove-btn.png" v-on:click="removeQuestion(question.question_id)">
         </li>
+        </section>
+        <section v-if="this.activeQuestions.length === 0">
+          <p>No questions added yet!</p>
+        </section>
       </ul>
     </div>
 
@@ -279,6 +285,10 @@ textarea:focus, input:focus{
 #questionList {
   display: grid;
   grid-template-columns: 1fr 10px;
+}
+
+#questionList image {
+  cursor: pointer;
 }
 
 /* Tablet */
