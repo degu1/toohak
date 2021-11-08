@@ -106,6 +106,7 @@ export default {
       this.insertChoices()
 
 
+
         var question = {
           quiz_id: this.activeQuizId,
           question: this.question,
@@ -122,6 +123,12 @@ export default {
 
 
         setTimeout(this.getQuestions,10)
+      this.question = ''
+      this.choiceOne = ''
+      this.choiceTwo = ''
+      this.choiceThree = ''
+      this.choiceFour = ''
+      this.rightAnswer = ''
     },
     setActiveQuizId: function (quiz) {
       this.activeQuizId = quiz.quiz_id
