@@ -12,7 +12,7 @@
       <div>
         <div v-if="questionIndex == qIndex">
 
-<!--          Ändra userId från hårdkodat till en variabel när den existerar på raden nedan-->
+          <!--          Ändra userId från hårdkodat till en variabel när den existerar på raden nedan-->
           <form id="answerForm" v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, 11)">
             <li v-for="choice of choices" v-bind:key="choice.answer_id">
 
@@ -23,13 +23,17 @@
 
             </li>
             <button v-if="questionIndex<questions.length-1">Next</button>
-            <button v-if="questionIndex===questions.length-1">Finish</button>
+            <button v-if="questionIndex===questions.length-1" v-on:click="gradeQuiz">Finish</button>
           </form>
         </div>
       </div>
 
     </ul>
-    <p>Score= {{ this.scores.filter(s => s === 1).length }} of {{ questions.length }}</p>
+    <div v-if="questionIndex === questions.length">
+      <p v-if="passing">Congratulations you have passed the quiz!!</p>
+      <p v-if="passing">Score= {{ this.scores.filter(s => s === 1).length }} of {{ questions.length }}</p>
+      <p v-if="!passing">You have not passed the quiz.</p>
+    </div>
 
   </div>
 </template>
@@ -46,6 +50,7 @@ export default {
       choices: [],
       answer: '',
       scores: [''],
+      passing: '',
     }
   },
   mounted() {
@@ -75,6 +80,13 @@ export default {
         });
   },
   methods: {
+    gradeQuiz: function () {
+      let numberOfPointsNeeded = Math.round(this.questions.length * (this.quiz[0].quiz_passing / 100))
+      console.log(this.scores.filter(s => s === 1).length)
+      if (numberOfPointsNeeded <= this.scores.filter(s => s === 1).length) {
+        this.passing = true
+      }
+    },
     checkAnswer: function (correctAnswer, questionId, userId) {
       let rightOrWrong = 0;
       if (correctAnswer === this.answer) {

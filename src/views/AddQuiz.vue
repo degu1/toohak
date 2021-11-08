@@ -11,19 +11,18 @@
       </form>
       <h2>Your quizes</h2>
       <ul class="quizList">
-        <li v-for="quiz in quizes" v-bind:key="quiz.quiz_id"
-            v-on:click="setActiveQuizId(quiz), getQuestions()">
-          {{ quiz.quiz_name }}
-          <img src="../assets/remove-btn.png" v-on:click="removeQuiz(quiz.quiz_id)">
+        <li v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
+          <p v-on:click="setActiveQuizId(quiz), getQuestions()">{{ quiz.quiz_name }}</p>
+          <img src="../assets/remove-btn.png" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
         </li>
       </ul>
     </div>
     <div v-if="activeQuizName!= ''" class="addQuizContainer">
       <form class="addQuestion" v-on:submit.prevent="addNewQuestion">
-        <h2>{{this.activeQuizName}}</h2>
+        <h2>{{ this.activeQuizName }}</h2>
         <section class="formAddItemContainer">
-        <label for="questionName"></label>
-        <input type="text" id="questionName" v-model="question" placeholder="Question...">
+          <label for="questionName"></label>
+          <input type="text" id="questionName" v-model="question" placeholder="Question...">
         </section>
 
         <section class="formAddItemContainer">
@@ -34,25 +33,33 @@
         </section>
 
         <section class="formAddItemContainer">
-        <input type="text" id="rightAnswer" v-model="rightAnswer" placeholder="Right answer...">
+          <input type="text" id="rightAnswer" v-model="rightAnswer" placeholder="Right answer...">
         </section>
 
         <button>Add question</button>
       </form>
-      <button v-on:click="activeQuizName=''">Back</button>
+
 
       <h2>Questions</h2>
-      <ul  class="formAddItemContainer" id="questionListContainer">
+      <ul class="formAddItemContainer" id="questionListContainer">
         <section v-if="this.activeQuestions.length != 0">
-        <li id="questionList" v-for="question in activeQuestions" v-bind:key="question.question_id">
-          {{ question.question }}
-          <img src="../assets/remove-btn.png" v-on:click="removeQuestion(question.question_id)">
-        </li>
+          <li id="questionList" v-for="(question, qIndex) in activeQuestions" v-bind:key="question.question_id">
+            {{ question.question }}
+            <img src="../assets/remove-btn.png" v-on:click="removeQuestion(question.question_id, qIndex)">
+          </li>
         </section>
         <section v-if="this.activeQuestions.length === 0">
           <p>No questions added yet!</p>
         </section>
       </ul>
+
+      <h2>Percent to pass the quiz</h2>
+      <section class="containerItem">
+        <p v-if="percentToPass!=''">{{ this.percentToPass }}%</p>
+        <input type="range" v-model="percentToPass">
+      </section>
+      <button v-on:click="changeGrading">Change grading</button>
+      <button v-on:click="activeQuizName=''; updateQuizes();">Back</button>
     </div>
 
   </div>
@@ -77,22 +84,16 @@ export default {
       quizes: [],
       activeQuizId: '',
       activeQuizName: '',
-      activeQuestions: []
+      activeQuestions: [],
+      percentToPass: ''
 
     }
   }, mounted() {
-    fetch('http://127.0.0.1:3000/quiznames')
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data.quizes);
-          this.quizes = data.quizes;
-        });
+    this.updateQuizes();
   },
   methods: {
     updateQuizes: function () {
-      fetch('http://127.0.0.1:3000/quiznames')
+      fetch('http://127.0.0.1:3000/quizes')
           .then((response) => {
             return response.json();
           })
@@ -101,15 +102,22 @@ export default {
             this.quizes = data.quizes;
           })
     },
-    removeQuiz:function (quizId){
-      fetch('http://127.0.0.1:3000/quizes/' + quizId,{
-        method: 'DELETE'
+    changeGrading: function () {
+      fetch('http://127.0.0.1:3000/passing/' + this.activeQuizId + '/' + this.percentToPass, {
+        method: 'PUT'
       })
     },
-    removeQuestion: function (questionId){
-      fetch('http://127.0.0.1:3000/questions/' + questionId,{
+    removeQuiz: function (quizId, index) {
+      fetch('http://127.0.0.1:3000/quizes/' + quizId, {
         method: 'DELETE'
       })
+      this.quizes.splice(index, 1)
+    },
+    removeQuestion: function (questionId, index) {
+      fetch('http://127.0.0.1:3000/questions/' + questionId, {
+        method: 'DELETE'
+      })
+      this.activeQuestions.splice(index, 1)
     },
     addNewQuiz: function () {
       fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName, {
@@ -164,6 +172,7 @@ export default {
     setActiveQuizId: function (quiz) {
       this.activeQuizId = quiz.quiz_id
       this.activeQuizName = quiz.quiz_name
+      this.percentToPass = quiz.quiz_passing;
     },
     getQuestions: function () {
       fetch('http://127.0.0.1:3000/questions/' + this.activeQuizId)
@@ -183,6 +192,27 @@ export default {
 </script>
 
 <style>
+
+img {
+  cursor: pointer;
+}
+
+.containerItem {
+  margin-top: 15px;
+  background-color: white;
+  border-radius: 20px;
+  width: 80%;
+  padding: 10px 20px;
+  justify-self: center;
+}
+
+.containerItem p {
+  margin: 0;
+  padding-top: 10px;
+  font-size: large;
+  font-weight: 700;
+}
+
 
 #questionContainer {
   padding: 100px 10px;
@@ -215,10 +245,13 @@ ul {
 }
 
 .quizList {
-  cursor: pointer;
   display: grid;
   justify-self: center;
   width: 100%;
+}
+
+.quizList p {
+  cursor: pointer;
 }
 
 .quizList li {
@@ -269,7 +302,7 @@ h2 {
   margin-bottom: 0;
 }
 
-textarea:focus, input:focus{
+textarea:focus, input:focus {
   outline: none;
 }
 
