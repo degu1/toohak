@@ -70,6 +70,7 @@ export default {
       jsonBody: '',
       quizes: [],
       activeQuizId: '',
+      activeQuizName: '',
       activeQuestions: []
 
     }
@@ -94,7 +95,16 @@ export default {
             this.quizes = data.quizes;
           })
     },
-
+    removeQuiz:function (quizId){
+      fetch('http://127.0.0.1:3000/quizes/' + quizId,{
+        method: 'DELETE'
+      })
+    },
+    removeQuestion: function (questionId){
+      fetch('http://127.0.0.1:3000/questions/' + questionId,{
+        method: 'DELETE'
+      })
+    },
     addNewQuiz: function () {
       fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName, {
         method: 'POST'
@@ -147,6 +157,7 @@ export default {
     },
     setActiveQuizId: function (quiz) {
       this.activeQuizId = quiz.quiz_id
+      this.activeQuizName = quiz.quiz_name
     },
     getQuestions: function () {
       fetch('http://127.0.0.1:3000/questions/' + this.activeQuizId)
