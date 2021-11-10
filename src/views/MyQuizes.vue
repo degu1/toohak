@@ -27,11 +27,16 @@ export default {
   data: function () {
     return {
       quizes: [],
-      activeQuizId: ''
+      activeQuizId: '',
+      isLoggedIn: localStorage.getItem("user_id")
     }
   },
   mounted() {
-    fetch('http://127.0.0.1:3000/quiznames')
+      if(this.isLoggedIn === null)
+        this.$router.push({name: 'Home'})
+
+
+    fetch('http://127.0.0.1:3000/quizes/users/' + localStorage.getItem("user_id"))
         .then((response) => {
           return response.json();
         })

@@ -9,9 +9,17 @@
       <img src="./assets/burgerMenu.png" id="burger-menu" v-on:click="burgerMenuOpen">
       <div class="linksContainer">
         <section class="links">
+<!--          <button v-if="!test.isEmpty()" v-on:click="console.log()">log out</button>-->
+          <p>{{this.role}}</p>
           <router-link to="/">Home</router-link>
-          <router-link to="/addQuiz">Add quiz</router-link>
           <router-link to="/myQuizes">My quizes</router-link>
+
+<!--          <div v-if="this.role === 'student'">-->
+
+            <router-link to="/quiz_setup">Quiz setup</router-link>
+
+<!--          </div>-->
+
         </section>
       </div>
 
@@ -29,6 +37,11 @@
 
 <script>
 export default {
+  data: function() {
+    return {
+      role: ''
+    }
+  },
   methods: {
     burgerMenuOpen: function () {
       const links = document.querySelector('.links');
