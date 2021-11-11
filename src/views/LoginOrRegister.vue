@@ -1,25 +1,31 @@
 <template>
   <div v-if="isLoggedIn === null" class="login">
-    <form v-on:submit.prevent="verifyLogin">
+
+    <form v-on:submit="verifyLogin">
       <input type="text" v-model="username" placeholder="Username..">
       <input type="password" v-model="password" placeholder="Password..">
-      <input type="submit">
+      <button>Login</button>
       <p>{{errorMessage}}</p>
     </form>
+    <p>{{this.isLoggedIn}}</p>
   </div>
 </template>
 
 <script>
 
+
 export default {
-  name: "Login",
-  data: function (){
+  name: "LoginOrRegister",
+  data() {
     return {
       username: '',
       password: '',
-      isLoggedIn: localStorage.getItem("user_id"),
+      isLoggedIn: undefined,
       errorMessage: ''
     }
+  },
+  mounted() {
+    this.isLoggedIn = localStorage.getItem("role")
   },
   methods: {
     verifyLogin: function () {
@@ -33,16 +39,26 @@ export default {
             if(data.answers[0] !== undefined){
               localStorage.setItem("user_id", data.answers[0].user_id)
               localStorage.setItem("role", data.answers[0].user_ROLE)
+              this.isLoggedIn = data.answers[0].user_ROLE
+              console.log('The id is: ' + this.$route.params);
+              this.$router.push({name: 'My Quizes'})
             }else{
               this.errorMessage = "Wrong username or password, try again."
             }
           })
+
+
+    },
+    test: function () {
+
     }
   }
 }
-//console.log(document.querySelector("input[name=answer]:checked").value)
+
 </script>
 
-<style scoped>
-
+<style>
+.login {
+  padding-top: 100px;
+}
 </style>

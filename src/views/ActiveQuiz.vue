@@ -54,6 +54,9 @@ export default {
     }
   },
   mounted() {
+    if(this.isLoggedIn === null)
+      this.$router.push({name: 'Login/Register'})
+
     fetch('http://127.0.0.1:3000/quizes/' + this.$route.params.quiz_id)
         .then((response) => {
           return response.json();

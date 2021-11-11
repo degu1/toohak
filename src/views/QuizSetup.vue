@@ -85,10 +85,18 @@ export default {
       activeQuizId: '',
       activeQuizName: '',
       activeQuestions: [],
-      percentToPass: ''
+      percentToPass: '',
+      get loggedInRole() {
+        return localStorage.getItem('role') || '';
+      },
 
     }
   }, mounted() {
+    if(this.loggedInRole === '')
+      this.$router.push({name: 'Login/Register'})
+    if(this.loggedInRole === 'student')
+      this.$router.push({name: 'My Quizes'})
+
     this.updateQuizes();
   },
   methods: {

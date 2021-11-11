@@ -28,13 +28,14 @@ export default {
     return {
       quizes: [],
       activeQuizId: '',
-      isLoggedIn: localStorage.getItem("user_id")
+      get isLoggedIn() {
+        return localStorage.getItem('role') || '';
+      },
     }
   },
   mounted() {
-      if(this.isLoggedIn === null)
-        this.$router.push({name: 'Home'})
-
+    if(this.isLoggedIn === '')
+      this.$router.push({name: 'Login/Register'})
 
     fetch('http://127.0.0.1:3000/quizes/users/' + localStorage.getItem("user_id"))
         .then((response) => {
