@@ -9,11 +9,16 @@
       <div class="linksContainer">
         <section class="links">
           <!--          Log in and log out-->
-          <button v-if="this.userId !== ''" v-on:click="logOut">log out</button>
+          <section v-if="this.userId !== ''">
+            <span>Welcome, {{username}}</span>
+            <button  v-on:click="logOut">log out</button>
+          </section>
+
           <router-link v-if="this.userId === ''" to="/">Login/register</router-link>
 
           <div v-if="this.userId !== ''">
             <router-link to="/myQuizes">My quizes</router-link>
+            <router-link to="/statistics">Statistics</router-link>
 
             <div v-if="this.role === 'teacher'">
               <router-link to="/quiz_setup">Quiz setup</router-link>
@@ -44,6 +49,9 @@ export default {
       },
       get userId() {
         return localStorage.getItem('user_id') || '';
+      },
+      get username() {
+        return localStorage.getItem('username') || '';
       }
     }
   },
