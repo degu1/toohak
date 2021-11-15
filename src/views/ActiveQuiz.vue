@@ -1,22 +1,25 @@
 <template>
-  <div id="questionContainer">
-    <h1 id="quizName">{{ quiz[0].quiz_name }}</h1>
-    <ul id="question" v-for="(question, qIndex) in questions" v-bind:key="question.question_id"
+  <main>
+    <h1>{{ quiz[0].quiz_name }}</h1>
+    <ul class="itemContainer" id="activeQuestionContainer" v-for="(question, qIndex) in questions"
+        v-bind:key="question.question_id"
         v-on:load="getNewAnswers">
 
-      <section id="questionNumberContainer"
-               :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'), (scores[qIndex] === 0 ? 'questionNumberWrongAnswer' : 'questionNumberContainer')]">
+      <section id="questionNumber"
+               :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'),
+               (scores[qIndex] === 0 ? 'questionNumberWrongAnswer' : 'questionNumberContainer')]">
         <h3>{{ qIndex + 1 }}</h3></section>
-      <div v-if="questionIndex == qIndex" id="topBoarderQuestion"></div>
-      <span>{{ question.question }}</span>
+      <div v-if="questionIndex == qIndex" id="topOfQuestionContainer"></div>
+      <p>{{ question.question }}</p>
       <div>
         <div v-if="questionIndex == qIndex">
 
           <!--          Ändra userId från hårdkodat till en variabel när den existerar på raden nedan-->
-          <form id="answerForm" v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, 11)">
+          <form id="activeQuestionForm"
+                v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, 11)">
             <li v-for="choice of choices" v-bind:key="choice.answer_id">
 
-              <div id="answer" v-if="choice.question_id === question.question_id">
+              <div id="choices" v-if="choice.question_id === question.question_id">
                 <input type="radio" name="answer" v-model="answer" :value="choice.answer">
                 {{ choice.answer }}
               </div>
@@ -27,15 +30,15 @@
           </form>
         </div>
       </div>
-
     </ul>
+
     <div v-if="questionIndex === questions.length">
       <p v-if="passing">Congratulations you have passed the quiz!!</p>
       <p v-if="passing">Score= {{ this.scores.filter(s => s === 1).length }} of {{ questions.length }}</p>
       <p v-if="!passing">You have not passed the quiz.</p>
     </div>
 
-  </div>
+  </main>
 </template>
 
 <script>
@@ -54,7 +57,7 @@ export default {
     }
   },
   mounted() {
-    if(this.isLoggedIn === null)
+    if (this.isLoggedIn === null)
       this.$router.push({name: 'Login/Register'})
 
     fetch('http://127.0.0.1:3000/quizes/' + this.$route.params.quiz_id)
@@ -122,6 +125,6 @@ export default {
 
 <style scoped>
 
-@import '../assets/css/activeQuiz.css';
+@import '../assets/css/toohak.css';
 
 </style>

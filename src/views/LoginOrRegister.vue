@@ -1,7 +1,7 @@
 <template>
-  <div v-if="isLoggedIn === null" class="login">
+  <main v-if="isLoggedIn === null">
 
-    <form v-if="!registerActive" v-on:submit.prevent="verifyLogin">
+    <form class="itemContainer" v-if="!registerActive" v-on:submit.prevent="verifyLogin">
       <input type="text" v-model="username" placeholder="Username..">
       <input type="password" v-model="password" placeholder="Password..">
       <button>Login</button>
@@ -10,7 +10,7 @@
       </p>
     </form>
 
-    <form v-if="registerActive" v-on:submit.prevent="registerUser">
+    <form class="itemContainer" v-if="registerActive" v-on:submit.prevent="registerUser">
       <input type="text" v-model="registerUsername" placeholder="Write your name..">
       <input type="password" v-model="registerPassword" placeholder="Write your password..">
       <input type="password" v-model="confirmPassword" placeholder="Confirm your password..">
@@ -28,7 +28,7 @@
                                                                style="color: white; font-weight: 300">here!</span></p>
     </form>
     <p style="color: red">{{ errorMessage }}</p>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -113,8 +113,8 @@ export default {
 
 </script>
 
+
+
 <style>
-.login {
-  padding-top: 100px;
-}
+@import '../assets/css/toohak.css';
 </style>

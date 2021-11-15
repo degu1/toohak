@@ -1,52 +1,57 @@
 <template>
-  <div id="questionContainer">
+  <main>
 
-    <div v-if="activeQuizName == ''" class="addQuizContainer">
-      <h1 id="quizName">Add new quiz</h1>
-      <form v-on:submit.prevent="addNewQuiz" id="addNewQuiz">
+    <div v-if="activeQuizName == ''" class="itemContainer">
+      <h1>Add new quiz</h1>
+      <form class="editForm" v-on:submit.prevent="addNewQuiz">
 
         <input type="text" v-model="quizName" placeholder="Quiz name...">
-
         <button v-on:click="updateQuizes()">Add quiz</button>
+
       </form>
+
       <h2>Your quizes</h2>
-      <ul class="quizList">
-        <li v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
+      <ul v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
+        <li class="editItemContainer">
           <p>{{ quiz.quiz_name }}</p>
-          <img src="../assets/edit-btn.svg" v-on:click="setActiveQuizId(quiz), getQuestions()" >
-          <img src="../assets/delete-btn.svg" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
+          <img id="editBtn" src="../assets/edit-btn.svg" v-on:click="setActiveQuizId(quiz), getQuestions()" >
+          <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
         </li>
       </ul>
     </div>
-    <div v-if="activeQuizName!= ''" class="addQuizContainer">
-      <form class="addQuestion" v-on:submit.prevent="addNewQuestion">
-        <h2>{{ this.activeQuizName }}</h2>
+
+
+
+    <div v-if="activeQuizName!= ''" class="itemContainer">
+      <form class="editForm" v-on:submit.prevent="addNewQuestion">
+        <h1>{{ this.activeQuizName }}</h1>
         <section class="formAddItemContainer">
           <label for="questionName"></label>
           <input type="text" id="questionName" v-model="question" placeholder="Question...">
         </section>
 
         <section class="formAddItemContainer">
-          <input type="text" placeholder="Choice 1" id="choices" v-model="choiceOne">
+          <input type="text" placeholder="Choice 1" v-model="choiceOne">
           <input type="text" placeholder="Choice 2" v-model="choiceTwo">
           <input type="text" placeholder="Choice 3" v-model="choiceThree">
           <input type="text" placeholder="Choice 4" v-model="choiceFour">
         </section>
 
         <section class="formAddItemContainer">
-          <input type="text" id="rightAnswer" v-model="rightAnswer" placeholder="Right answer...">
+          <input type="text" v-model="rightAnswer" placeholder="Right answer...">
         </section>
 
         <button>Add question</button>
       </form>
 
 
+
       <h2>Questions</h2>
-      <ul class="formAddItemContainer" id="questionListContainer">
+      <ul>
         <section v-if="this.activeQuestions.length != 0">
           <li id="questionList" v-for="(question, qIndex) in activeQuestions" v-bind:key="question.question_id">
-            {{ question.question }}
-            <img src="../assets/delete-btn.svg" v-on:click="removeQuestion(question.question_id, qIndex)">
+            <p>{{ question.question }}</p>
+            <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuestion(question.question_id, qIndex)">
           </li>
         </section>
         <section v-if="this.activeQuestions.length === 0">
@@ -54,8 +59,10 @@
         </section>
       </ul>
 
+      <!--------------------------------------->
+
       <h2>Percent to pass the quiz</h2>
-      <section class="containerItem">
+      <section id="percentageContainer">
         <p v-if="percentToPass!=''">{{ this.percentToPass }}%</p>
         <input type="range" v-model="percentToPass">
       </section>
@@ -63,7 +70,7 @@
       <button v-on:click="activeQuizName=''; updateQuizes();">Back</button>
     </div>
 
-  </div>
+  </main>
 </template>
 
 <script>
@@ -201,154 +208,6 @@ export default {
 
 <style>
 
-img {
-  cursor: pointer;
-}
-
-.containerItem {
-  margin-top: 15px;
-  background-color: white;
-  border-radius: 20px;
-  width: 80%;
-  padding: 10px 20px;
-  justify-self: center;
-}
-
-.containerItem p {
-  margin: 0;
-  padding-top: 10px;
-  font-size: large;
-  font-weight: 700;
-}
-
-
-#questionContainer {
-  padding: 100px 10px;
-  color: #17252A;
-  display: grid;
-}
-
-.addQuizContainer {
-  display: grid;
-  flex-direction: column;
-  border-radius: 20px;
-}
-
-button {
-  margin: 10px 20px;
-  border-radius: 10px;
-  background-color: #17252A;
-  color: white;
-  justify-self: center;
-  width: fit-content;
-  font-weight: lighter;
-  padding: 10px 30px;
-  border-style: none;
-  cursor: pointer;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.quizList {
-  display: grid;
-  justify-self: center;
-  width: 100%;
-  text-align: center;
-}
-
-.quizList img {
-  width: 32px;
-  height: 32px;
-  margin: 3px;
-}
-
-.quizList p {
-  font-size: 1.1em;
-  font-weight: 500;
-  margin: 0;
-}
-
-.quizList li {
-  display: grid;
-  grid-template-columns: 1fr 34px 38px;
-  background-color: white;
-  width: 100%;
-  border-radius: 20px;
-  margin-bottom: 20px;
-  justify-items: center;
-  align-items: center;
-  user-select: none;
-}
-
-.addQuestion {
-  display: flex;
-  flex-direction: column;
-}
-
-.formAddItemContainer {
-  display: grid;
-  margin-top: 15px;
-}
-
-input {
-  margin: 5px;
-  width: 50%;
-  justify-self: center;
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  font-weight: 300;
-}
-
-#addNewQuiz {
-  display: grid;
-}
-
-.addQuestion {
-  display: grid;
-}
-
-h1 {
-  margin-bottom: 10px;
-}
-
-h2 {
-  color: white;
-  margin-bottom: 0;
-}
-
-textarea:focus, input:focus {
-  outline: none;
-}
-
-#questionListContainer {
-  background-color: white;
-  border-radius: 20px;
-  padding: 20px;
-  width: 50%;
-  gap: 10px;
-  justify-self: center;
-}
-
-#questionList {
-  display: grid;
-  grid-template-columns: 1fr 10px;
-}
-
-#questionList image {
-  cursor: pointer;
-}
-
-/* Tablet */
-@media screen and (min-width: 768px) {
-  .addQuizContainer {
-    justify-self: center;
-    width: 100%;
-    max-width: 700px;
-  }
-}
+@import '../assets/css/toohak.css';
 
 </style>

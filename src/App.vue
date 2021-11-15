@@ -1,42 +1,38 @@
 <template>
-  <div id="app">
+  <main>
     <div class="backgroundGradientLeft"></div>
     <div class="backgroundGradientRight"></div>
     <div id="backgroundFading" v-on:click="burgerMenuClose"></div>
     <nav id="nav">
       <h1 class="logo">!<span>toohak</span></h1>
       <img src="./assets/burgerMenu.png" id="burger-menu" v-on:click="burgerMenuOpen">
-      <div class="linksContainer">
-        <section class="links">
-          <!--          Log in and log out-->
-          <section v-if="this.userId !== ''">
-            <span>Welcome, {{username}}</span>
-            <button  v-on:click="logOut">log out</button>
+
+        <section class="sideMenu">
+          <section class="welcomeContainer" v-if="this.userId !== ''">
+            <p>Welcome, {{ username }}</p>
+            <button v-on:click="logOut">log out</button>
           </section>
 
           <router-link v-if="this.userId === ''" to="/">Login/register</router-link>
 
-          <div v-if="this.userId !== ''">
-            <router-link to="/myQuizes">My quizes</router-link>
-            <router-link to="/statistics">Statistics</router-link>
+          <router-link v-if="this.userId !== ''" to="/myQuizes">My quizes</router-link>
 
-            <div v-if="this.role === 'teacher'">
-              <router-link to="/quiz_setup">Quiz setup</router-link>
-            </div>
-          </div>
+          <router-link v-if="this.userId !== ''" to="/statistics">Statistics</router-link>
+
+          <router-link v-if="this.role === 'teacher'" to="/quiz_setup">Quiz setup</router-link>
+
 
         </section>
-      </div>
 
     </nav>
     <router-view/>
 
-  </div>
+  </main>
 </template>
 
 <style>
 
-@import './assets/css/app.css';
+@import 'assets/css/toohak.css';
 
 </style>
 
@@ -57,13 +53,13 @@ export default {
   },
   methods: {
     burgerMenuOpen: function () {
-      const links = document.querySelector('.links');
+      const links = document.querySelector('.sideMenu');
       const backgroundFading = document.querySelector('#backgroundFading');
       links.classList.add('open');
       backgroundFading.classList.add('onClick');
     },
     burgerMenuClose: function () {
-      const links = document.querySelector('.links');
+      const links = document.querySelector('.sideMenu');
       const backgroundFading = document.querySelector('#backgroundFading');
       links.classList.remove('open');
       backgroundFading.classList.remove('onClick');
