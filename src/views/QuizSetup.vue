@@ -12,8 +12,9 @@
       <h2>Your quizes</h2>
       <ul class="quizList">
         <li v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
-          <p v-on:click="setActiveQuizId(quiz), getQuestions()">{{ quiz.quiz_name }}</p>
-          <img src="../assets/remove-btn.png" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
+          <p>{{ quiz.quiz_name }}</p>
+          <img src="../assets/edit-btn.svg" v-on:click="setActiveQuizId(quiz), getQuestions()" >
+          <img src="../assets/delete-btn.svg" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
         </li>
       </ul>
     </div>
@@ -45,7 +46,7 @@
         <section v-if="this.activeQuestions.length != 0">
           <li id="questionList" v-for="(question, qIndex) in activeQuestions" v-bind:key="question.question_id">
             {{ question.question }}
-            <img src="../assets/remove-btn.png" v-on:click="removeQuestion(question.question_id, qIndex)">
+            <img src="../assets/delete-btn.svg" v-on:click="removeQuestion(question.question_id, qIndex)">
           </li>
         </section>
         <section v-if="this.activeQuestions.length === 0">
@@ -70,6 +71,7 @@
 export default {
   name: "Add Quiz",
   data: function () {
+
     return {
       quizName: '',
       quizId: 0,
@@ -128,7 +130,7 @@ export default {
       this.activeQuestions.splice(index, 1)
     },
     addNewQuiz: function () {
-      fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName, {
+      fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName.toUpperCase(), {
         method: 'POST'
       }).then((response) => {
         response.text().then((text) => {
@@ -168,7 +170,6 @@ export default {
         body: jsonQuestion
       })
 
-
       setTimeout(this.getQuestions, 10)
       this.question = ''
       this.choiceOne = ''
@@ -192,7 +193,6 @@ export default {
             this.activeQuestions = data.questions;
           });
     }
-
   },
 
 
@@ -256,21 +256,31 @@ ul {
   display: grid;
   justify-self: center;
   width: 100%;
+  text-align: center;
+}
+
+.quizList img {
+  width: 32px;
+  height: 32px;
+  margin: 3px;
 }
 
 .quizList p {
-  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 500;
+  margin: 0;
 }
 
 .quizList li {
   display: grid;
-  grid-template-columns: 1fr 10px;
+  grid-template-columns: 1fr 34px 38px;
   background-color: white;
-  padding: 10px 20px;
-  width: 50%;
+  width: 100%;
   border-radius: 20px;
   margin-bottom: 20px;
-  justify-self: center;
+  justify-items: center;
+  align-items: center;
+  user-select: none;
 }
 
 .addQuestion {
