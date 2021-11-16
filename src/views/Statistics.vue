@@ -4,10 +4,10 @@
     <ul class="itemContainer" v-for="result in quizResults" v-bind:key="result.result_id">
       <li>
         <h3>{{result.quiz_name}}</h3>
-        <p style="font-weight: lighter">Total number of Questions: {{result.n_questions}}</p>
-        <p style="font-weight: lighter">Correct answers: {{result.result}}</p>
-        <img v-if="result.passed === 'passed'" src="../assets/passed.png">
-        <img v-if="result.passed === 'failed'" src="../assets/failed.png">
+        <p style="font-weight: lighter">Total number of Questions: <span style="font-weight: 500">{{result.n_questions}}</span></p>
+        <p style="font-weight: lighter">Correct answers: <span style="font-weight: 500">{{result.result}}</span></p>
+        <img v-if="result.passed === 'passed'" src="../assets/passed.png" style="margin: 20px">
+        <img v-if="result.passed === 'failed'" src="../assets/failed.png" style="margin: 20px">
       </li>
     </ul>
   </main>

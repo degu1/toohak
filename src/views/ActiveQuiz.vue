@@ -1,6 +1,7 @@
 <template>
   <main>
     <h1>{{ quiz[0].quiz_name }}</h1>
+    {{ this.sumOfResults }}
     <ul class="itemContainer" id="activeQuestionContainer" v-for="(question, qIndex) in questions"
         v-bind:key="question.question_id"
         v-on:load="getNewAnswers">
@@ -14,9 +15,8 @@
       <div>
         <div v-if="questionIndex == qIndex">
 
-          <!--          Ändra userId från hårdkodat till en variabel när den existerar på raden nedan-->
           <form id="activeQuestionForm"
-                v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, 11)">
+                v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, userId)">
             <li v-for="choice of choices" v-bind:key="choice.answer_id">
 
               <div id="choices" v-if="choice.question_id === question.question_id">
@@ -53,7 +53,11 @@ export default {
       choices: [],
       answer: '',
       scores: [''],
+      sumOfResults: {'user_id': '', 'results': []},
       passing: '',
+      get userId() {
+        return localStorage.getItem('user_id')
+      }
     }
   },
   mounted() {
@@ -92,32 +96,34 @@ export default {
       if (numberOfPointsNeeded <= this.scores.filter(s => s === 1).length) {
         this.passing = true
       }
+
+      let jsonBody = JSON.stringify(this.sumOfResults)
+
+      fetch('http://127.0.0.1:3000/results/', {
+        method: 'POST',
+        body: jsonBody,
+        headers: {'Content-Type': 'application/json'}
+      })
+
     },
-    checkAnswer: function (correctAnswer, questionId, userId) {
+    checkAnswer: function (correctAnswer, questionId) {
       let rightOrWrong = 0;
+
       if (correctAnswer === this.answer) {
         rightOrWrong = 1;
         this.scores[this.questionIndex] = 1;
       } else {
         this.scores[this.questionIndex] = 0;
       }
-      this.questionIndex++;
-      var jsonBody = '{"result":' + rightOrWrong + ', "question_id":' + questionId + ', "user_id":' + userId + '}'
 
-      fetch('http://127.0.0.1:3000/result/', {
-        method: 'POST',
-        body: jsonBody,
-        headers: {'Content-Type': 'application/json'}
-      })
-    },
+      this.sumOfResults.results.push({'question_id': questionId, 'result': rightOrWrong})
 
-    getNewAnswers: function () {
+      if(this.sumOfResults.user_id === ''){
+        this.sumOfResults.user_id = this.userId
+      }
 
-    },
-    nextQuestion: function () {
       this.questionIndex++;
 
-      this.getNewAnswers();
     }
   }
 }

@@ -14,7 +14,7 @@
       <ul v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
         <li class="editItemContainer">
           <p>{{ quiz.quiz_name }}</p>
-          <img id="editBtn" src="../assets/edit-btn.svg" v-on:click="setActiveQuizId(quiz), getQuestions()" >
+          <img class="editBtn" src="../assets/edit-btn.svg" v-on:click="setActiveQuizId(quiz), getQuestions()" >
           <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
         </li>
       </ul>
@@ -49,7 +49,7 @@
       <h2>Questions</h2>
       <ul>
         <section v-if="this.activeQuestions.length != 0">
-          <li id="questionList" v-for="(question, qIndex) in activeQuestions" v-bind:key="question.question_id">
+          <li class="questionList" v-for="(question, qIndex) in activeQuestions" v-bind:key="question.question_id">
             <p>{{ question.question }}</p>
             <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuestion(question.question_id, qIndex)">
           </li>

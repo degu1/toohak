@@ -50,11 +50,16 @@ export default {
       registerPassword: '',
       confirmPassword: '',
       registerUserRole: '',
-      message: ''
+      message: '',
+      get loggedInRole() {
+        return localStorage.getItem('role') || '';
+      }
     }
   },
   mounted() {
     this.isLoggedIn = localStorage.getItem("role")
+    if(this.loggedInRole !== '')
+      this.$router.push({name: 'My Quizes'})
   },
   methods: {
     verifyLogin: function () {

@@ -1,14 +1,20 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
+  <div>
+    <p>{{this.msg}}</p>
   </div>
 </template>
 
+
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'CapitalizeFirstLetter',
   props: {
     msg: String
+  },
+  methods: {
+    capitalizeFirstLetter: function (string) {
+      return string.charAt(0).toUpperCase() + string.substring(1)
+    }
   }
 }
 </script>

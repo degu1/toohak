@@ -59,7 +59,8 @@ img {
 }
 
 input[type=text],
-input[type=password] {
+input[type=password],
+input[type=search]{
     margin: 5px;
     width: 50%;
     justify-self: center;
@@ -303,7 +304,13 @@ p {}
     width: 32px;
     height: 32px;
     margin: 3px;
+}
 
+.addStudentBtn {
+    grid-area: delete;
+    width: 32px;
+    height: 32px;
+    margin: 3px;
 }
 
 .deleteBtn {

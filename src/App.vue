@@ -21,6 +21,7 @@
 
           <router-link v-if="this.role === 'teacher'" to="/quiz_setup">Quiz setup</router-link>
 
+          <router-link v-if="this.role === 'teacher'" to="/class_setup">Class setup</router-link>
 
         </section>
 
