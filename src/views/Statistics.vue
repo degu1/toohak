@@ -1,19 +1,22 @@
 <template>
-  <div>
-    <ul v-for="result in quizResults" v-bind:key="result.result_id">
+  <main>
+    <h1>Statistics</h1>
+    <ul class="itemContainer" v-for="result in quizResults" v-bind:key="result.result_id">
       <li>
-        <p>{{result.quiz_name}}</p>
-        <p>Correct answers: {{result.result}}</p>
-        <p>Questions answered: {{result.n_questions}}</p>
-        <p>Passed: {{result.passed}}</p>
+        <h3>{{result.quiz_name}}</h3>
+        <p style="font-weight: lighter">Total number of Questions: {{result.n_questions}}</p>
+        <p style="font-weight: lighter">Correct answers: {{result.result}}</p>
+        <img v-if="result.passed === 'passed'" src="../assets/passed.png">
+        <img v-if="result.passed === 'failed'" src="../assets/failed.png">
       </li>
     </ul>
-  </div>
+  </main>
 </template>
 
 <script>
 export default {
   name: "Statistics",
+  degrees: '',
   data: function () {
     return {
       quizResults: [],
@@ -40,12 +43,14 @@ export default {
           for (let i = 0; i < this.quizResults.length; i++) {
             console.log('test')
             if(this.quizResults[i].passed === 0) {
-              this.quizResults[i].passed = 'Failed'
+              this.quizResults[i].passed = 'failed'
             }else {
-              this.quizResults[i].passed = 'Passed'
+              this.quizResults[i].passed = 'passed'
             }
           }
         });
+
+    this.degrees = 1/2*360
   }
 }
 </script>

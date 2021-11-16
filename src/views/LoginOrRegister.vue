@@ -2,15 +2,18 @@
   <main v-if="isLoggedIn === null">
 
     <form class="itemContainer" v-if="!registerActive" v-on:submit.prevent="verifyLogin">
+      <h1>Login</h1>
       <input type="text" v-model="username" placeholder="Username..">
       <input type="password" v-model="password" placeholder="Password..">
       <button>Login</button>
-      <p style="font-weight: 300">Not registered yet? Sign up <span v-on:click="registerActive = true, errorMessage = ''"
-                                                                    style="color: white; font-weight: 300">here!</span>
+      <p style="font-weight: 300">Not registered yet? Sign up <span
+          v-on:click="registerActive = true, errorMessage = ''"
+          style="color: white; font-weight: 300">here!</span>
       </p>
     </form>
 
     <form class="itemContainer" v-if="registerActive" v-on:submit.prevent="registerUser">
+      <h1>Register</h1>
       <input type="text" v-model="registerUsername" placeholder="Write your name..">
       <input type="password" v-model="registerPassword" placeholder="Write your password..">
       <input type="password" v-model="confirmPassword" placeholder="Confirm your password..">
@@ -56,11 +59,11 @@ export default {
   methods: {
     verifyLogin: function () {
 
-      if(this.username === '') {
+      if (this.username === '') {
         this.errorMessage = "Please type in your username."
-      }else if (this.password === '') {
+      } else if (this.password === '') {
         this.errorMessage = "Please type in your password."
-      }else {
+      } else {
         let loginBody = JSON.stringify({username: this.username, password: this.password})
         fetch('http://127.0.0.1:3000/login/', {
           method: 'POST',
@@ -112,7 +115,6 @@ export default {
 }
 
 </script>
-
 
 
 <style>

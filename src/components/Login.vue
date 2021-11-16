@@ -1,12 +1,13 @@
 <template>
-  <div v-if="isLoggedIn === null" class="login">
+  <main v-if="isLoggedIn === null" class="login">
+    <h1>Login</h1>
     <form v-on:submit.prevent="verifyLogin">
       <input type="text" v-model="username" placeholder="Username..">
       <input type="password" v-model="password" placeholder="Password..">
       <input type="submit">
       <p>{{errorMessage}}</p>
     </form>
-  </div>
+  </main>
 </template>
 
 <script>
