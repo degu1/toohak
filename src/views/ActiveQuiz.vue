@@ -3,8 +3,7 @@
     <h1>{{ quiz[0].quiz_name }}</h1>
     {{ this.sumOfResults }}
     <ul class="itemContainer" id="activeQuestionContainer" v-for="(question, qIndex) in questions"
-        v-bind:key="question.question_id"
-        v-on:load="getNewAnswers">
+        v-bind:key="question.question_id">
 
       <section id="questionNumber"
                :class="[(scores[qIndex] === 1 ? 'questionNumberCorrectAnswer' : 'questionNumberContainer'),
@@ -118,7 +117,7 @@ export default {
 
       this.sumOfResults.results.push({'question_id': questionId, 'result': rightOrWrong})
 
-      if(this.sumOfResults.user_id === ''){
+      if (this.sumOfResults.user_id === '') {
         this.sumOfResults.user_id = this.userId
       }
 
