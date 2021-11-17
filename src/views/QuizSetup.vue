@@ -137,7 +137,7 @@ export default {
       this.activeQuestions.splice(index, 1)
     },
     addNewQuiz: function () {
-      fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName.toUpperCase(), {
+      fetch('http://127.0.0.1:3000/quiz_name/' + this.quizName.charAt(0).toUpperCase() + this.quizName.substring(1), {
         method: 'POST'
       }).then((response) => {
         response.text().then((text) => {
