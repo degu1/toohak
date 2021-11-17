@@ -20,7 +20,7 @@
             <li v-for="choice of choices" v-bind:key="choice.answer_id">
 
               <div id="choices" v-if="choice.question_id === question.question_id">
-                <input type="radio" name="answer" v-model="answer" :value="choice.answer">
+                <input type="radio" name="answer" v-model="answer" :value="choice.answer" checked="checked">
                 {{ choice.answer }}
               </div>
 

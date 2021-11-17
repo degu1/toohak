@@ -64,6 +64,7 @@ export default {
   methods: {
     verifyLogin: function () {
 
+
       if (this.username === '') {
         this.errorMessage = "Please type in your username."
       } else if (this.password === '') {

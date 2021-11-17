@@ -8,9 +8,9 @@ body {
 }
 
 main {
-
     color: #17252A;
     display: grid;
+    width: auto;
     font-family: Ubuntu, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -52,6 +52,7 @@ button {
     margin: 10px 30%;
     height: 35px;
     cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 2px 3px 6px;
 }
 
 img {
@@ -69,6 +70,7 @@ input[type=search]{
     border: none;
     font-weight: 300;
     box-shadow: rgba(0, 0, 0, 0.16) 2px 3px 6px;
+    outline: none;
 }
 
 input[type=range] {
@@ -147,10 +149,10 @@ p {}
 
 #nav {
     display: grid;
-    grid-template-columns: 100px auto 70px;
-    grid-template-rows: auto auto;
+    grid-template-columns: 80px auto 50px;
+    grid-template-rows: auto;
     grid-template-areas: "logo test burger-icon";
-    width: 100vw;
+    width: 100%;
     align-items: center;
     margin-bottom: 50px;
 }
@@ -160,7 +162,7 @@ p {}
     left: 0;
     padding: 0;
     grid-area: logo;
-    margin: 10px 35px;
+    margin: 10px 15px;
     color: white;
     width: auto;
     z-index: 0;
@@ -188,12 +190,12 @@ p {}
 }
 
 .sideMenu a {
-    margin-left: 30%;
     font-size: 1.5em;
     text-decoration: none;
     color: black;
     margin-bottom: 5px;
     margin-top: 5px;
+    text-align: center;
 }
 
 .sideMenu.open {
@@ -299,7 +301,7 @@ p {}
     grid-area: quizTitle;
 }
 
-#editBtn {
+.editBtn {
     grid-area: edit;
     width: 32px;
     height: 32px;
@@ -325,7 +327,7 @@ p {}
     margin-top: 15px;
 }
 
-#questionList {
+.questionList {
     display: grid;
     grid-template-columns: auto 38px;
     grid-template-areas: "questionTitle delete";

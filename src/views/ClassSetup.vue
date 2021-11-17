@@ -12,12 +12,10 @@
       <ul v-for="(c, cIndex) in classes" v-bind:key="c.classes_id">
         <li class="editItemContainer">
           <p>{{ c.classes_name }}</p>
-
           <img class="editBtn" src="../assets/edit-btn.svg" v-on:click="setActiveClassId(c), getStudents()">
           <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeClass(c.classes_id, cIndex)">
         </li>
       </ul>
-
     </div>
 
     <div v-if="activeClassName!= ''" class="itemContainer">
@@ -27,7 +25,10 @@
       <ul>
         <section v-if="this.activeStudents.length != 0">
           <li class="questionList" v-for="(student, sIndex) in activeStudents" v-bind:key="student.user_id">
-            <p>{{ student.user_username }} <span style="font-weight: 300">{{ student.user_role }}</span></p>
+            <div>
+              <p style="padding: 0">{{ student.user_username }}</p>
+              <p style="font-weight: 300; font-size: 0.8em;padding: 0 0 5px 0">{{ student.user_role }}</p>
+            </div>
             <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeStudent(student.user_id, sIndex)">
           </li>
         </section>
