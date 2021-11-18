@@ -41,7 +41,6 @@ export default {
           this.quizResults = data.quiz_result;
 
           for (let i = 0; i < this.quizResults.length; i++) {
-            console.log('test')
             if(this.quizResults[i].passed === 0) {
               this.quizResults[i].passed = 'failed'
             }else {

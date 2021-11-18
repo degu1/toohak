@@ -90,7 +90,7 @@ export default {
   methods: {
     gradeQuiz: function () {
       let numberOfPointsNeeded = Math.round(this.questions.length * (this.quiz[0].quiz_passing / 100))
-      console.log(this.scores.filter(s => s === 1).length)
+
       if (numberOfPointsNeeded <= this.scores.filter(s => s === 1).length) {
         this.passing = true
       }

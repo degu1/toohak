@@ -12,7 +12,8 @@
       <ul v-for="(c, cIndex) in classes" v-bind:key="c.classes_id">
         <li class="editItemContainer">
           <p>{{ c.classes_name }}</p>
-          <img class="editBtn" src="../assets/edit-btn.svg" v-on:click="setActiveClassId(c), getStudents()">
+          <img class="editBtn" src="../assets/edit-btn.svg"
+               v-on:click="setActiveClassId(c), getStudents(), getQuizes()">
           <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeClass(c.classes_id, cIndex)">
         </li>
       </ul>
@@ -37,20 +38,60 @@
         </section>
       </ul>
 
-      <button type="button" v-on:click="showStudents">Add new student</button>
-      <div v-if="this.addStudent">
-        <input type="search" placeholder="Search for student..." v-model="search">
-        <ul style="max-height: 1000px; overflow-y: auto;">
-          <section>
-            <li class="questionList" v-for="user in users" v-bind:key="user.user_id">
-              <p v-if="user.user_username.toLowerCase().includes(search.toLowerCase())">{{ user.user_username }}</p>
-              <img v-if="user.user_username.toLowerCase().includes(search.toLowerCase())" class="addStudentBtn"
-                   src="../assets/edit-btn.svg" v-on:click="addStudentToClass(user.user_id)">
-            </li>
-          </section>
+      <button v-on:click="searchOpen(); showStudents();">Add new student</button>
+
+      <div class="searchContainer" v-on:click="searchClose">
+        <div v-if="this.addStudent" class="itemContainer">
+          <input type="search" placeholder="Search for student..." v-model="searchStudent">
+          <ul style="max-height: 1000px; overflow-y: auto;">
+            <section>
+
+              <li class="questionList" v-for="(user, uIndex) in users" v-bind:key="user.user_id">
+                <p v-if="user.user_username.toLowerCase().includes(searchStudent.toLowerCase()) && activeStudents.map(s => s.user_username).filter(u => u === user.user_username).length === 0">
+                  {{ user.user_username }}</p>
+                <img
+                    v-if="user.user_username.toLowerCase().includes(searchStudent.toLowerCase()) && activeStudents.map(s => s.user_username).filter(u => u === user.user_username).length === 0"
+                    class="addStudentBtn"
+                    src="../assets/edit-btn.svg" v-on:click="addStudentToClass(user.user_id, uIndex)">
+              </li>
+            </section>
+          </ul>
+        </div>
+      </div>
+
+      <!--      Quizes       -->
+
+      <div>
+        <h2>Quizes</h2>
+        <ul>
+          <li class="questionList" v-for="(quiz, qIndex) in activeQuizConnections" v-bind:key="quiz.quiz_id">
+            <p>{{ quiz.quiz_name }}</p>
+            <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
+          </li>
         </ul>
       </div>
 
+      <button v-on:click="searchOpen(); showQuizes();">Add new quiz</button>
+      <div class="searchContainer" v-on:click="searchClose">
+        <div class="itemContainer">
+          <input type="search" placeholder="Search for quiz..." v-model="searchQuiz">
+          <ul style="max-height: 1000px; overflow-y: auto;">
+            <section>
+              <li class="questionList" v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
+                <p v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0">
+                  {{ quiz.quiz_name }}</p>
+                <img
+                    v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0"
+                    class="addStudentBtn"
+                    src="../assets/edit-btn.svg" v-on:click="addStudentToClass(quiz.quiz_id, qIndex)">
+              </li>
+            </section>
+          </ul>
+        </div>
+      </div>
+      <button v-on:click="activeClassName=''; activeClassId=''; addStudent=false; addQuizes=false; updateClasses()">
+        Back
+      </button>
     </div>
   </main>
 </template>
@@ -67,8 +108,13 @@ export default {
       activeClassName: '',
       activeStudents: [''],
       users: [''],
-      search: '',
-      addStudent: false
+      quizes: [''],
+      searchStudent: '',
+      searchQuiz: '',
+      addStudent: false,
+      addQuizes: false,
+      activeQuizConnections: [],
+      showSeachContainer: false
     }
   },
   mounted() {
@@ -87,6 +133,14 @@ export default {
         .then((data) => {
           console.log(data.users);
           this.users = data.users;
+        });
+    fetch('http://127.0.0.1:3000/quizes/')
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data.quizes);
+          this.quizes = data.quizes;
         });
   },
   methods: {
@@ -127,6 +181,45 @@ export default {
     },
     showStudents: function () {
       this.addStudent = true;
+      this.addQuizes = false;
+    },
+    showQuizes: function () {
+      this.addQuizes = true;
+      this.addStudent = false;
+    },
+    removeStudent: function (userId, index) {
+      fetch('http://127.0.0.1:3000/classes_users/' + this.activeClassId + '/' + userId, {
+        method: 'DELETE'
+      })
+      this.activeStudents.splice(index, 1)
+    },
+    addStudentToClass: function (userId, index) {
+      fetch('http://127.0.0.1:3000/classes_users/' + this.activeClassId + '/' + userId, {
+        method: 'POST',
+      })
+      this.activeStudents.push(this.users[index])
+    },
+    removeQuiz: function (quizId, index) {
+      fetch('http://127.0.0.1:3000/classes_quizes/' + this.activeClassId + '/' + quizId, {
+        method: 'DELETE'
+      })
+      this.activeQuizConnections.splice(index, 1)
+    },
+    searchOpen: function () {
+      const searchContainer = document.querySelector('.searchContainer');
+      searchContainer.classList.add('show');
+    }
+    ,
+    searchClose: function (event) {
+      const searchContainer = document.querySelector('.searchContainer');
+      const input = document.querySelector('input');
+      const ul = document.querySelector('ul');
+
+      if (input.className !== event.target.className || ul.className !== event.target.className)
+        searchContainer.classList.remove('show')
+
+      this.searchStudent = ''
+      this.searchQuiz = ''
     }
   }
 }
