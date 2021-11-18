@@ -1,18 +1,20 @@
 <template>
 
-  <div id="myquizes">
-    <h1 id="myQuizName">My Quizes</h1>
-    <section class="quizContainer">
-      <ul class="quizName" v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
-          <li>
-            {{ quiz.quiz_name }}
-            <div v-if="quiz.quiz_id === activeQuizId">
-              <button v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
-            </div>
-          </li>
+  <main>
+    <h1>My Quizes</h1>
+    <section class="itemContainer">
+      <ul v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
+        <li class="showQuizli">
+
+          <p>{{ quiz.quiz_name }}</p>
+
+          <button v-if="quiz.quiz_id === activeQuizId" v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
+
+        </li>
       </ul>
     </section>
-  </div>
+
+  </main>
 
 </template>
 
@@ -26,11 +28,17 @@ export default {
   data: function () {
     return {
       quizes: [],
-      activeQuizId: ''
+      activeQuizId: '',
+      get isLoggedIn() {
+        return localStorage.getItem('role') || '';
+      },
     }
   },
   mounted() {
-    fetch('http://127.0.0.1:3000/quiznames')
+    if (this.isLoggedIn === '')
+      this.$router.push({name: 'Login/Register'})
+
+    fetch('http://127.0.0.1:3000/quizes/users/' + localStorage.getItem("user_id"))
         .then((response) => {
           return response.json();
         })
@@ -52,8 +60,8 @@ export default {
 }
 </script>
 
-<style >
+<style>
 
-@import '../assets/css/myQuizes.css';
+@import '../assets/css/toohak.css';
 
 </style>

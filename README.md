@@ -1,4 +1,4 @@
-# toohak
+## toohak
 
 ## Project setup
 ```
