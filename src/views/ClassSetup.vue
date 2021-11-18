@@ -22,7 +22,9 @@
     <div v-if="activeClassName!= ''" class="itemContainer">
       <h1>{{ this.activeClassName }}</h1>
 
+      <!--      Students      -->
 
+      <h2>Students</h2>
       <ul>
         <section v-if="this.activeStudents.length != 0">
           <li class="questionList" v-for="(student, sIndex) in activeStudents" v-bind:key="student.user_id">
@@ -179,6 +181,16 @@ export default {
             this.activeStudents = data.students;
           });
     },
+    getQuizes: function () {
+      fetch('http://127.0.0.1:3000/classes_quizes/' + this.activeClassId)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data.quizes);
+            this.activeQuizConnections = data.quizes;
+          });
+    },
     showStudents: function () {
       this.addStudent = true;
       this.addQuizes = false;
@@ -226,5 +238,5 @@ export default {
 </script>
 
 <style scoped>
-
+@import '../assets/css/toohak.css';
 </style>
