@@ -43,6 +43,7 @@
       <button v-on:click="searchOpen(); showStudents();">Add new student</button>
 
       <div class="searchContainer" v-on:click="searchClose">
+
         <div v-if="this.addStudent" class="itemContainer">
           <input type="search" placeholder="Search for student..." v-model="searchStudent">
           <ul style="max-height: 1000px; overflow-y: auto;">
@@ -59,6 +60,24 @@
             </section>
           </ul>
         </div>
+
+        <div v-if="this.addQuizes" class="itemContainer">
+          <input type="search" placeholder="Search for quiz..." v-model="searchQuiz">
+          <ul style="max-height: 1000px; overflow-y: auto;">
+            <section>
+              <li class="questionList" v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
+                <p v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0">
+                  {{ quiz.quiz_name }}</p>
+                <img
+                    v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0"
+                    class="addStudentBtn"
+                    src="../assets/edit-btn.svg" v-on:click="addQuizToClass(quiz.quiz_id, qIndex)">
+              </li>
+            </section>
+          </ul>
+        </div>
+
+
       </div>
 
       <!--      Quizes       -->
@@ -74,23 +93,7 @@
       </div>
 
       <button v-on:click="searchOpen(); showQuizes();">Add new quiz</button>
-      <div class="searchContainer" v-on:click="searchClose">
-        <div class="itemContainer">
-          <input type="search" placeholder="Search for quiz..." v-model="searchQuiz">
-          <ul style="max-height: 1000px; overflow-y: auto;">
-            <section>
-              <li class="questionList" v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
-                <p v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0">
-                  {{ quiz.quiz_name }}</p>
-                <img
-                    v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0"
-                    class="addStudentBtn"
-                    src="../assets/edit-btn.svg" v-on:click="addStudentToClass(quiz.quiz_id, qIndex)">
-              </li>
-            </section>
-          </ul>
-        </div>
-      </div>
+
       <button v-on:click="activeClassName=''; activeClassId=''; addStudent=false; addQuizes=false; updateClasses()">
         Back
       </button>
@@ -146,6 +149,12 @@ export default {
         });
   },
   methods: {
+    addQuizToClass: function (quizId, index) {
+      fetch('http://127.0.0.1:3000/classes_quizes/?class_id=' + this.activeClassId + '&quiz_id=' + quizId, {
+        method: 'POST'
+      })
+      this.activeQuizConnections.push(this.quizes[index])
+    },
     updateClasses: function () {
       fetch('http://127.0.0.1:3000/classes/')
           .then((response) => {
@@ -212,7 +221,7 @@ export default {
       this.activeStudents.push(this.users[index])
     },
     removeQuiz: function (quizId, index) {
-      fetch('http://127.0.0.1:3000/classes_quizes/' + this.activeClassId + '/' + quizId, {
+      fetch('http://127.0.0.1:3000/classes_quizes/?class_id=' + this.activeClassId + '&quiz_id=' + quizId, {
         method: 'DELETE'
       })
       this.activeQuizConnections.splice(index, 1)

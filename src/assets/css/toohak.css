@@ -1,6 +1,6 @@
-
 /* ----------------------------------------------------------------------- General css settings ------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
 body {
     margin: 0;
     padding: 0;
@@ -61,7 +61,7 @@ img {
 
 input[type=text],
 input[type=password],
-input[type=search]{
+input[type=search] {
     margin: 5px;
     width: 50%;
     justify-self: center;
@@ -90,6 +90,7 @@ input[type=range] {
     background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.66);
     justify-items: center;
+    align-items: center;
 }
 
 .searchContainer.show {
@@ -160,10 +161,10 @@ input[type=range] {
     width: 100%;
 }
 
-p {}
+p {
+}
 
 /* ------------------------------------------------------- App.vue ----------------------------------------------------------- */
-
 
 
 #nav {
@@ -327,6 +328,12 @@ p {}
     margin: 3px;
 }
 
+.passedBtn {
+    width: 32px;
+    height: 32px;
+    margin: 3px;
+}
+
 .addStudentBtn {
     grid-area: delete;
     width: 32px;
@@ -359,6 +366,23 @@ p {}
     box-shadow: rgba(0, 0, 0, 0.16) 2px 3px 6px;
     list-style: none;
     margin: 10px;
+}
+
+/* ------------------------------------------------------------------- QuizSetup.vue ------------------------------------------------------------------- */
+
+.resultsContainer {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-areas: 'emptyleft userName passedBtn';
+    width: 100%;
+}
+
+.resultsContainer p {
+    font-weight: 300;
+    grid-area: userName;
+}
+.resultsContainer img {
+    grid-area: passedBtn;
 }
 
 /* Tablet */
