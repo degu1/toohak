@@ -28,7 +28,7 @@
       <ul>
         <section v-if="this.activeStudents.length != 0">
           <li class="questionList" v-for="(student, sIndex) in activeStudents" v-bind:key="student.user_id">
-            <div>
+            <div style="grid-area: questionTitle">
               <p style="padding: 0">{{ student.user_username }}</p>
               <p style="font-weight: 300; font-size: 0.8em;padding: 0 0 5px 0">{{ student.user_role }}</p>
             </div>
@@ -44,7 +44,7 @@
 
       <div class="searchContainer" v-on:click="searchClose">
 
-        <div v-if="this.addStudent" class="itemContainer">
+        <div v-if="addStudent" class="itemContainer">
           <input type="search" placeholder="Search for student..." v-model="searchStudent">
           <ul style="max-height: 1000px; overflow-y: auto;">
             <section>
@@ -86,7 +86,7 @@
         <h2>Quizes</h2>
         <ul>
           <li class="questionList" v-for="(quiz, qIndex) in activeQuizConnections" v-bind:key="quiz.quiz_id">
-            <p>{{ quiz.quiz_name }}</p>
+            <p style="grid-area: questionTitle">{{ quiz.quiz_name }}</p>
             <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuiz(quiz.quiz_id, qIndex)">
           </li>
         </ul>

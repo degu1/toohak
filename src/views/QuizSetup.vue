@@ -50,7 +50,7 @@
       <ul>
         <section v-if="this.activeQuestions.length != 0">
           <li class="questionList" v-for="(question, qIndex) in activeQuestions" v-bind:key="question.question_id">
-            <p>{{ question.question }}</p>
+            <p style="grid-area: questionTitle">{{ question.question }}</p>
             <img class="deleteBtn" src="../assets/delete-btn.svg" v-on:click="removeQuestion(question.question_id, qIndex)">
           </li>
         </section>

@@ -10,18 +10,18 @@
         <section class="sideMenu">
           <section class="welcomeContainer" v-if="this.userId !== ''">
             <p>Welcome, {{ username }}</p>
-            <button v-on:click="logOut">log out</button>
+            <button v-on:click="logOut(); burgerMenuClose();">log out</button>
           </section>
 
-          <router-link v-if="this.userId === ''" to="/">Login/register</router-link>
+          <router-link v-if="this.userId === ''" to="/"><p v-on:click="burgerMenuClose();">Login/register</p></router-link>
 
-          <router-link v-if="this.userId !== ''" to="/myQuizes">My quizes</router-link>
+          <router-link v-if="this.userId !== ''" to="/myQuizes"><p v-on:click="burgerMenuClose();">My quizes</p></router-link>
 
-          <router-link v-if="this.userId !== ''" to="/statistics">Statistics</router-link>
+          <router-link v-if="this.userId !== ''" to="/statistics"><p v-on:click="burgerMenuClose();">Statistics</p></router-link>
 
-          <router-link v-if="this.role === 'teacher'" to="/quiz_setup">Quiz setup</router-link>
+          <router-link v-if="this.role === 'teacher'" to="/quiz_setup"><p v-on:click="burgerMenuClose();">Quiz setup</p></router-link>
 
-          <router-link v-if="this.role === 'teacher'" to="/class_setup">Class setup</router-link>
+          <router-link v-if="this.role === 'teacher'" to="/class_setup"><p v-on:click="burgerMenuClose();">Class setup</p></router-link>
 
         </section>
 

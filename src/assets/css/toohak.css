@@ -97,6 +97,22 @@ input[type=range] {
     display: grid;
 }
 
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td, th {
+    padding: 4px;
+
+}
+
+tr:nth-child(even) {
+    background-color: #ececec;
+}
+
 /* ------------------------------------------------------- ActiveQuiz.vue ----------------------------------------------------- */
 
 #activeQuestionContainer {
@@ -216,6 +232,12 @@ p {
     margin-bottom: 5px;
     margin-top: 5px;
     text-align: center;
+}
+
+.sideMenu a p {
+    padding: 0;
+    font-size: 1.1em;
+    font-weight: 400;
 }
 
 .sideMenu.open {
@@ -355,8 +377,8 @@ p {
 
 .questionList {
     display: grid;
-    grid-template-columns: auto 38px;
-    grid-template-areas: "questionTitle delete";
+    grid-template-columns:38px auto 38px;
+    grid-template-areas: "emptySlot questionTitle delete";
 }
 
 #percentageContainer {
@@ -370,12 +392,6 @@ p {
 
 /* ------------------------------------------------------------------- QuizSetup.vue ------------------------------------------------------------------- */
 
-.resultsContainer {
-    display: grid;
-    grid-template-columns: 200px 1fr 200px;
-    grid-template-areas: 'emptyleft userName passedBtn';
-    width: 100%;
-}
 
 .resultsContainer p {
     font-weight: 300;

@@ -13,35 +13,39 @@
       </li>
     </ul>
 
-    <div class="itemContainer" v-if="isLoggedIn === 'teacher'">
+    <div class="itemContainer" v-if="isLoggedIn === 'teacher'" >
 
+      <ul v-for="c in classes" v-bind:key="c.classes_id"  style=" user-select: none;">
+        <p v-on:click="openResultForClass(c.classes_id)" style=" cursor: pointer">{{ c.classes_name }}</p>
 
-
-      <ul v-for="c in classes" v-bind:key="c.classes_id" v-on:click="openResultForClass(c.classes_id)">
-        <p>{{ c.classes_name }}</p>
-
-
-        <div v-if="activeClass == c.classes_id">
-          <li v-for="stats in statistics" v-bind:key="stats.quiz_id">
-            <p></p>
+        <div class="resultsContainer" v-if="activeClass == c.classes_id">
+          <li v-for="stats in statistics" v-bind:key="stats.quiz_id" style="padding-bottom: 20px">
             <p>{{ stats.quiz_name }}</p>
 
-            <div class="resultsContainer" v-for="result in stats.results" v-bind:key="result.user_id" >
-              <p v-if="result.atempeted === 1">{{ result.user_username }}</p>
-              <img v-if="result.pass === 1" class="passedBtn" src="../assets/passed.svg" v-on:click="openStudentStats(result.user_id)">
-              <img v-if="result.pass === 0" class="passedBtn" src="../assets/delete-btn.svg">
+            <table>
+              <tr>
+                <th>Name:</th>
+                <th>Score:</th>
+                <th>passed:</th>
+              </tr>
+              <tr v-for="result in stats.results" v-bind:key="result.user_id">
+                <td v-if="result.atempeted === 1">{{ result.user_username }}</td>
+                <td v-if="result.atempeted === 0">{{ result.user_username }}</td>
+                <td v-if="result.atempeted === 0"></td>
+                <td v-if="result.atempeted === 1">{{ result.sum_result }} / {{ result.n_questions }}</td>
+                <td>
+                  <img v-if="result.pass === 1" class="passedBtn" src="../assets/passed.svg"
+                       v-on:click="openStudentStats(result.user_id)">
+                  <img v-if="result.pass === 0" class="passedBtn" src="../assets/delete-btn.svg">
+                  <img v-if="result.atempeted === 0" class="passedBtn" src="../assets/not_done.svg">
+                </td>
+              </tr>
+            </table>
 
-              <p v-if="result.atempeted === 0">{{ result.user_username }}</p>
-              <img v-if="result.atempeted === 0" class="passedBtn" src="../assets/not_done.svg">
-
-              <div> {{result.sum_result}} </div>
-
-            </div>
           </li>
         </div>
       </ul>
     </div>
-
 
 
   </main>
