@@ -1,5 +1,15 @@
 <template>
+
   <main v-if="isLoggedIn === null">
+
+
+    <transition name="error">
+      <ErrorMessage v-if="showError" v-bind:error-message="this.message"></ErrorMessage>
+    </transition>
+    <transition name="success">
+      <SuccessMessage ref="test" v-if="showSuccess" v-bind:success-message="this.message"></SuccessMessage>
+    </transition>
+
 
     <form class="itemContainer" v-if="!registerActive" v-on:submit.prevent="verifyLogin">
       <h1>Login</h1>
@@ -30,27 +40,31 @@
       <p style="font-weight: 300">Have an account? Login <span v-on:click="registerActive = false, errorMessage = ''"
                                                                style="color: white; font-weight: 300">here!</span></p>
     </form>
-    <p style="color: red">{{ errorMessage }}</p>
   </main>
 </template>
 
 <script>
 
 
+import ErrorMessage from "../components/ErrorMessage";
+import SuccessMessage from "../components/SuccessMessage";
+
 export default {
   name: "LoginOrRegister",
+  components: {SuccessMessage, ErrorMessage},
   data() {
     return {
       username: '',
       password: '',
       isLoggedIn: undefined,
-      errorMessage: '',
+      showError: false,
+      showSuccess: false,
+      message: '',
       registerActive: false,
       registerUsername: '',
       registerPassword: '',
       confirmPassword: '',
       registerUserRole: '',
-      message: '',
       get loggedInRole() {
         return localStorage.getItem('role') || '';
       }
@@ -58,17 +72,16 @@ export default {
   },
   mounted() {
     this.isLoggedIn = localStorage.getItem("role")
-    if(this.loggedInRole !== '')
+    if (this.loggedInRole !== '')
       this.$router.push({name: 'My Quizes'})
   },
   methods: {
     verifyLogin: function () {
 
-
       if (this.username === '') {
-        this.errorMessage = "Please type in your username."
+        this.triggerErrorMessage("Please type in your username.")
       } else if (this.password === '') {
-        this.errorMessage = "Please type in your password."
+        this.triggerErrorMessage("Please type in your password.")
       } else {
         let loginBody = JSON.stringify({username: this.username, password: this.password})
         fetch('http://127.0.0.1:3000/login/', {
@@ -87,20 +100,20 @@ export default {
                 console.log('The id is: ' + this.$route.params);
                 this.$router.push({name: 'My Quizes'})
               } else {
-                this.errorMessage = "Wrong username or password, try again."
+                this.triggerErrorMessage("Wrong username or password, try again.")
               }
             })
       }
     },
     registerUser: function () {
       if (this.registerUsername === '') {
-        this.errorMessage = "Please type in your username."
+        this.triggerErrorMessage("Please type in your username.")
       } else if (this.registerPassword === '') {
-        this.errorMessage = "Please type in your password."
+        this.triggerErrorMessage("Please type in your password.")
       } else if (this.registerPassword !== this.confirmPassword) {
-        this.errorMessage = "Please type in matching password."
+        this.triggerErrorMessage("Please type in matching password.")
       } else if (this.registerUserRole === '') {
-        this.errorMessage = "Please choose a role."
+        this.triggerErrorMessage("Please choose a role.")
       } else {
         let registerBody = JSON.stringify({
           username: this.registerUsername,
@@ -112,10 +125,19 @@ export default {
           headers: {'Content-Type': 'application/json'},
           body: registerBody
         })
-        this.message = "You have successfully created your account!"
-        this.errorMessage = ''
+        this.triggerSuccessMessage("You have successfully created your account!")
       }
 
+    },
+    triggerErrorMessage: function (message) {
+      this.showError = true;
+      this.message = message
+      setTimeout(() => this.showError = false, 3000)
+    },
+    triggerSuccessMessage: function (message) {
+      this.showSuccess = true;
+      this.message = message
+      setTimeout(() => this.showSuccess = false, 3000)
     }
   }
 }
@@ -124,5 +146,70 @@ export default {
 
 
 <style>
+
+.error-enter-active {
+  animation: error-fade-show 0.5s ease;
+}
+
+.error-leave-active {
+  animation: fade-leave 0.5s ease;
+}
+
+.success-enter-active {
+  animation: success-fade-show 0.5s ease;
+}
+
+.success-leave-active {
+  animation: fade-leave 0.5s ease;
+}
+
+@keyframes error-fade-show {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 1
+  }
+  60% {
+    transform: translateX(8px);
+  }
+  70% {
+    transform: translateX(-8px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+  90% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes success-fade-show {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@keyframes fade-leave {
+  0% {
+    transform: translateY(0);
+    opacity: 1
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+}
+
 @import '../assets/css/toohak.css';
 </style>

@@ -3,15 +3,14 @@
   <main>
     <h1>My Quizes</h1>
     <section class="itemContainer">
-      <ul v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
-        <li class="showQuizli">
+        <ul v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
 
-          <p>{{ quiz.quiz_name }}</p>
+          <li class="showQuizli">
+            <p>{{ quiz.quiz_name }}</p>
+            <button v-if="quiz.quiz_id === activeQuizId" v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
+          </li>
 
-          <button v-if="quiz.quiz_id === activeQuizId" v-on:click="changeRoute(quiz.quiz_id)">Start quiz</button>
-
-        </li>
-      </ul>
+        </ul>
     </section>
 
   </main>
