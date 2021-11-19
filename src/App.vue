@@ -7,6 +7,8 @@
       <h1 class="logo">!<span>toohak</span></h1>
       <img src="./assets/burgerMenu.png" id="burger-menu" v-on:click="burgerMenuOpen">
 
+
+
         <section class="sideMenu">
           <section class="welcomeContainer" v-if="this.userId !== ''">
             <p>Welcome, {{ username }}</p>
