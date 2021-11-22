@@ -2,14 +2,12 @@
 
   <main v-if="isLoggedIn === null">
 
-
     <transition name="error">
       <ErrorMessage v-if="showError" v-bind:error-message="this.message"></ErrorMessage>
     </transition>
     <transition name="success">
-      <SuccessMessage ref="test" v-if="showSuccess" v-bind:success-message="this.message"></SuccessMessage>
+      <SuccessMessage v-if="showSuccess" v-bind:success-message="this.message"></SuccessMessage>
     </transition>
-
 
     <form class="itemContainer" v-if="!registerActive" v-on:submit.prevent="verifyLogin">
       <h1>Login</h1>
@@ -18,7 +16,7 @@
       <button>Login</button>
       <p style="font-weight: 300">Not registered yet? Sign up <span
           v-on:click="registerActive = true, errorMessage = ''"
-          style="color: white; font-weight: 300">here!</span>
+          style="color: white; font-weight: 300; cursor: pointer">here!</span>
       </p>
     </form>
 
@@ -36,9 +34,8 @@
       </section>
 
       <button>Register</button>
-      <p>{{ message }}</p>
       <p style="font-weight: 300">Have an account? Login <span v-on:click="registerActive = false, errorMessage = ''"
-                                                               style="color: white; font-weight: 300">here!</span></p>
+                                                               style="color: white; font-weight: 300; cursor: pointer">here!</span></p>
     </form>
   </main>
 </template>
@@ -57,14 +54,14 @@ export default {
       username: '',
       password: '',
       isLoggedIn: undefined,
-      showError: false,
-      showSuccess: false,
       message: '',
       registerActive: false,
       registerUsername: '',
       registerPassword: '',
       confirmPassword: '',
       registerUserRole: '',
+      showError: false,
+      showSuccess: false,
       get loggedInRole() {
         return localStorage.getItem('role') || '';
       }
@@ -107,7 +104,7 @@ export default {
     },
     registerUser: function () {
       if (this.registerUsername === '') {
-        this.triggerErrorMessage("Please type in your username.")
+        this.triggerErrorMessage( "Please type in your username.")
       } else if (this.registerPassword === '') {
         this.triggerErrorMessage("Please type in your password.")
       } else if (this.registerPassword !== this.confirmPassword) {
@@ -124,10 +121,17 @@ export default {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: registerBody
+        }).then((response) => {
+          if (response.status === 200) {
+            this.triggerSuccessMessage("You have successfully created an account!")
+            this.showSuccess = true;
+          } else if (response.status === 403) {
+            this.triggerErrorMessage("Username already exists.")
+          } else {
+            this.triggerErrorMessage("Something went wrong.")
+          }
         })
-        this.triggerSuccessMessage("You have successfully created your account!")
       }
-
     },
     triggerErrorMessage: function (message) {
       this.showError = true;
