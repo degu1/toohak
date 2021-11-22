@@ -1,6 +1,15 @@
 <template>
   <main>
+
+    <transition name="error">
+      <ErrorMessage v-if="showError" v-bind:error-message="this.message"></ErrorMessage>
+    </transition>
+    <transition name="success">
+      <SuccessMessage v-if="showSuccess" v-bind:success-message="this.message"></SuccessMessage>
+    </transition>
+
     <h1>{{ quiz[0].quiz_name }}</h1>
+
     <ul class="itemContainer" id="activeQuestionContainer" v-for="(question, qIndex) in questions"
         v-bind:key="question.question_id">
 
@@ -15,10 +24,10 @@
 
           <form id="activeQuestionForm"
                 v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, userId)">
-            <li v-for="choice of choices" v-bind:key="choice.answer_id">
+            <li v-for="(choice, cIndex) of choices" v-bind:key="choice.answer_id">
 
               <div id="choices" v-if="choice.question_id === question.question_id">
-                <input type="radio" name="answer" v-model="answer" :value="choice.answer" checked="checked">
+                <input type="radio" name="answer" v-model="answer" :value="choice.answer" v-bind:id="cIndex">
                 {{ choice.answer }}
               </div>
 
@@ -30,18 +39,17 @@
       </div>
     </ul>
 
-    <div v-if="questionIndex === questions.length">
-      <p v-if="passing">Congratulations you have passed the quiz!!</p>
-      <p v-if="passing">Score= {{ this.scores.filter(s => s === 1).length }} of {{ questions.length }}</p>
-      <p v-if="!passing">You have not passed the quiz.</p>
-    </div>
-
   </main>
 </template>
 
 <script>
+
+import ErrorMessage from "../components/ErrorMessage";
+import SuccessMessage from "../components/SuccessMessage";
+
 export default {
   name: "ActiveQuiz",
+  components: {SuccessMessage, ErrorMessage},
   data: function () {
     return {
       quiz: [''],
@@ -52,7 +60,9 @@ export default {
       answer: '',
       scores: [''],
       sumOfResults: {'user_id': '', 'results': []},
-      passing: '',
+      message: '',
+      showError: false,
+      showSuccess: false,
       get userId() {
         return localStorage.getItem('user_id')
       }
@@ -89,11 +99,6 @@ export default {
   },
   methods: {
     gradeQuiz: function () {
-      let numberOfPointsNeeded = Math.round(this.questions.length * (this.quiz[0].quiz_passing / 100))
-
-      if (numberOfPointsNeeded <= this.scores.filter(s => s === 1).length) {
-        this.passing = true
-      }
 
       let jsonBody = JSON.stringify(this.sumOfResults)
 
@@ -101,33 +106,113 @@ export default {
         method: 'POST',
         body: jsonBody,
         headers: {'Content-Type': 'application/json'}
+      }).then(() => {
+        this.triggerSuccessMessage('Thank you for successfully finish the Quiz')
       })
 
     },
     checkAnswer: function (correctAnswer, questionId) {
       let rightOrWrong = 0;
 
-      if (correctAnswer === this.answer) {
-        rightOrWrong = 1;
-        this.scores[this.questionIndex] = 1;
-      } else {
-        this.scores[this.questionIndex] = 0;
+      if(this.answer === '') {
+        this.triggerErrorMessage('You need to make a choice.')
+      }else {
+        if (correctAnswer === this.answer) {
+          rightOrWrong = 1;
+          this.scores[this.questionIndex] = 1;
+        } else {
+          this.scores[this.questionIndex] = 0;
+        }
+
+        this.sumOfResults.results.push({'question_id': questionId, 'result': rightOrWrong})
+
+        if (this.sumOfResults.user_id === '') {
+          this.sumOfResults.user_id = this.userId
+        }
+
+        this.questionIndex++;
+        this.answer = '';
       }
-
-      this.sumOfResults.results.push({'question_id': questionId, 'result': rightOrWrong})
-
-      if (this.sumOfResults.user_id === '') {
-        this.sumOfResults.user_id = this.userId
-      }
-
-      this.questionIndex++;
-
+    },
+    triggerErrorMessage: function (message) {
+      this.showError = true;
+      this.message = message
+      setTimeout(() => this.showError = false, 3000)
+    },
+    triggerSuccessMessage: function (message) {
+      this.showSuccess = true;
+      this.message = message
+      setTimeout(() => this.showSuccess = false, 3000)
     }
   }
 }
 </script>
 
 <style scoped>
+
+.error-enter-active {
+  animation: error-fade-show 0.5s ease;
+}
+
+.error-leave-active {
+  animation: fade-leave 0.5s ease;
+}
+
+.success-enter-active {
+  animation: success-fade-show 0.5s ease;
+}
+
+.success-leave-active {
+  animation: fade-leave 0.5s ease;
+}
+
+@keyframes error-fade-show {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 1
+  }
+  60% {
+    transform: translateX(8px);
+  }
+  70% {
+    transform: translateX(-8px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+  90% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes success-fade-show {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@keyframes fade-leave {
+  0% {
+    transform: translateY(0);
+    opacity: 1
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+}
 
 @import '../assets/css/toohak.css';
 

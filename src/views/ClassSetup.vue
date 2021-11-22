@@ -1,11 +1,19 @@
 <template>
   <main>
+
+    <transition name="error">
+      <ErrorMessage v-if="showError" v-bind:error-message="this.message"></ErrorMessage>
+    </transition>
+    <transition name="success">
+      <SuccessMessage v-if="showSuccess" v-bind:success-message="this.message"></SuccessMessage>
+    </transition>
+
     <div v-if="activeClassName === ''" class="itemContainer">
       <h1>Add new class</h1>
 
-      <form class="editForm" v-on:submit.prevent="addNewClass">
+      <form class="editForm" v-on:submit.prevent="addNewClass(); updateClasses()">
         <input type="text" v-model="className" placeholder="Class name...">
-        <button v-on:click="updateClasses()">Add class</button>
+        <button>Add class</button>
       </form>
 
       <h2>Your classes</h2>
@@ -50,7 +58,8 @@
             <section>
 
               <li class="questionList" v-for="(user, uIndex) in users" v-bind:key="user.user_id">
-                <p v-if="user.user_username.toLowerCase().includes(searchStudent.toLowerCase()) && activeStudents.map(s => s.user_username).filter(u => u === user.user_username).length === 0">
+                <p style="grid-area: questionTitle"
+                   v-if="user.user_username.toLowerCase().includes(searchStudent.toLowerCase()) && activeStudents.map(s => s.user_username).filter(u => u === user.user_username).length === 0">
                   {{ user.user_username }}</p>
                 <img
                     v-if="user.user_username.toLowerCase().includes(searchStudent.toLowerCase()) && activeStudents.map(s => s.user_username).filter(u => u === user.user_username).length === 0"
@@ -66,7 +75,8 @@
           <ul style="max-height: 1000px; overflow-y: auto;">
             <section>
               <li class="questionList" v-for="(quiz, qIndex) in quizes" v-bind:key="quiz.quiz_id">
-                <p v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0">
+                <p style="grid-area: questionTitle"
+                   v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0">
                   {{ quiz.quiz_name }}</p>
                 <img
                     v-if="quiz.quiz_name.toLowerCase().includes(searchQuiz.toLowerCase()) && activeQuizConnections.map(q => q.quiz_id).filter(i => i === quiz.quiz_id).length === 0"
@@ -74,10 +84,11 @@
                     src="../assets/edit-btn.svg" v-on:click="addQuizToClass(quiz.quiz_id, qIndex)">
               </li>
             </section>
+            <p style="font-weight: 300">Want to create a new quiz? <a style="font-weight: 600; cursor: pointer"
+                                                                      v-on:click="changeRoute">Click here!</a></p>
           </ul>
+
         </div>
-
-
       </div>
 
       <!--      Quizes       -->
@@ -92,7 +103,7 @@
         </ul>
       </div>
 
-      <button v-on:click="searchOpen(); showQuizes();">Add new quiz</button>
+      <button v-on:click="searchOpen(); showQuizes();">Share a quiz with class</button>
 
       <button v-on:click="activeClassName=''; activeClassId=''; addStudent=false; addQuizes=false; updateClasses()">
         Back
@@ -103,8 +114,13 @@
 
 <script>
 
+import router from "../router";
+import ErrorMessage from "../components/ErrorMessage";
+import SuccessMessage from "../components/SuccessMessage";
+
 export default {
   name: "ClassSetup",
+  components: {SuccessMessage, ErrorMessage},
   data: function () {
     return {
       className: '',
@@ -118,6 +134,9 @@ export default {
       searchQuiz: '',
       addStudent: false,
       addQuizes: false,
+      message: '',
+      showError: false,
+      showSuccess: false,
       activeQuizConnections: [],
       showSeachContainer: false
     }
@@ -153,6 +172,7 @@ export default {
       fetch('http://127.0.0.1:3000/classes_quizes/?class_id=' + this.activeClassId + '&quiz_id=' + quizId, {
         method: 'POST'
       })
+      this.triggerSuccessMessage('Successfully added quiz to class!')
       this.activeQuizConnections.push(this.quizes[index])
     },
     updateClasses: function () {
@@ -169,11 +189,20 @@ export default {
       fetch('http://127.0.0.1:3000/classes/' + classId, {
         method: 'DELETE'
       })
+      this.triggerSuccessMessage('Successfully removed class!')
       this.classes.splice(index, 1)
     },
     addNewClass: function () {
       fetch('http://127.0.0.1:3000/classes/' + this.className.charAt(0).toUpperCase() + this.className.substring(1), {
         method: 'POST'
+      }).then((response) => {
+        if (response.status === 200) {
+          this.triggerSuccessMessage('Successfully added class!')
+        } else if (response.status === 403) {
+          this.triggerErrorMessage('There is already a class with that name.')
+        } else {
+          this.triggerErrorMessage("Something went wrong.")
+        }
       })
     },
     setActiveClassId: function (c) {
@@ -212,18 +241,21 @@ export default {
       fetch('http://127.0.0.1:3000/classes_users/' + this.activeClassId + '/' + userId, {
         method: 'DELETE'
       })
+      this.triggerSuccessMessage('Successfully removed student!')
       this.activeStudents.splice(index, 1)
     },
     addStudentToClass: function (userId, index) {
       fetch('http://127.0.0.1:3000/classes_users/' + this.activeClassId + '/' + userId, {
         method: 'POST',
       })
+      this.triggerSuccessMessage('Successfully added student to class!')
       this.activeStudents.push(this.users[index])
     },
     removeQuiz: function (quizId, index) {
       fetch('http://127.0.0.1:3000/classes_quizes/?class_id=' + this.activeClassId + '&quiz_id=' + quizId, {
         method: 'DELETE'
       })
+      this.triggerSuccessMessage('Successfully removed quiz!')
       this.activeQuizConnections.splice(index, 1)
     },
     searchOpen: function () {
@@ -241,11 +273,89 @@ export default {
 
       this.searchStudent = ''
       this.searchQuiz = ''
+    },
+    changeRoute: function () {
+      router.push("/quiz_setup/")
+    },
+    triggerErrorMessage: function (message) {
+      this.showError = true;
+      this.message = message
+      setTimeout(() => this.showError = false, 3000)
+    },
+    triggerSuccessMessage: function (message) {
+      this.showSuccess = true;
+      this.message = message
+      setTimeout(() => this.showSuccess = false, 3000)
     }
   }
 }
 </script>
 
 <style scoped>
+
+.error-enter-active {
+  animation: error-fade-show 0.5s ease;
+}
+
+.error-leave-active {
+  animation: fade-leave 0.5s ease;
+}
+
+.success-enter-active {
+  animation: success-fade-show 0.5s ease;
+}
+
+.success-leave-active {
+  animation: fade-leave 0.5s ease;
+}
+
+@keyframes error-fade-show {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 1
+  }
+  60% {
+    transform: translateX(8px);
+  }
+  70% {
+    transform: translateX(-8px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+  90% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes success-fade-show {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+
+@keyframes fade-leave {
+  0% {
+    transform: translateY(0);
+    opacity: 1
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0
+  }
+}
+
 @import '../assets/css/toohak.css';
 </style>
