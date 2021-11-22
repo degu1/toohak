@@ -103,7 +103,7 @@
         </ul>
       </div>
 
-      <button v-on:click="searchOpen(); showQuizes();">Share a quiz with class</button>
+      <button v-on:click="searchOpen(); showQuizes();">Add quiz to class</button>
 
       <button v-on:click="activeClassName=''; activeClassId=''; addStudent=false; addQuizes=false; updateClasses()">
         Back

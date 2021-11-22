@@ -24,11 +24,11 @@
 
           <form id="activeQuestionForm"
                 v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, userId)">
-            <li v-for="(choice, cIndex) of choices" v-bind:key="choice.answer_id">
+            <li v-for="(answer, cIndex) of answers" v-bind:key="answer.answer_id">
 
-              <div id="choices" v-if="choice.question_id === question.question_id">
-                <input type="radio" name="answer" v-model="answer" :value="choice.answer" v-bind:id="cIndex">
-                {{ choice.answer }}
+              <div id="choices" v-if="answer.question_id === question.question_id">
+                <input type="radio" name="answer" v-model="userInput" :value="answer.answer" v-bind:id="cIndex">
+                {{ answer.answer }}
               </div>
 
             </li>
@@ -56,8 +56,8 @@ export default {
       questions: [],
       questionIndex: 0,
       activateChoicesAtIndexNum: 0,
-      choices: [],
-      answer: '',
+      answers: [],
+      userInput: '',
       scores: [''],
       sumOfResults: {'user_id': '', 'results': []},
       message: '',
@@ -94,7 +94,7 @@ export default {
         })
         .then((data) => {
           console.log(data.answers);
-          this.choices = data.answers;
+          this.answers = data.answers;
         });
   },
   methods: {
@@ -114,10 +114,10 @@ export default {
     checkAnswer: function (correctAnswer, questionId) {
       let rightOrWrong = 0;
 
-      if(this.answer === '') {
+      if(this.userInput === '') {
         this.triggerErrorMessage('You need to make a choice.')
       }else {
-        if (correctAnswer === this.answer) {
+        if (correctAnswer === this.userInput) {
           rightOrWrong = 1;
           this.scores[this.questionIndex] = 1;
         } else {
@@ -131,7 +131,7 @@ export default {
         }
 
         this.questionIndex++;
-        this.answer = '';
+        this.userInput = '';
       }
     },
     triggerErrorMessage: function (message) {

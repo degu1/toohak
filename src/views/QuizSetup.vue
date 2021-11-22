@@ -37,10 +37,10 @@
         </section>
 
         <section class="formAddItemContainer">
-          <input type="text" placeholder="Choice 1" v-model="choices[0]">
-          <input type="text" placeholder="Choice 2" v-model="choices[1]">
-          <input type="text" placeholder="Choice 3" v-model="choices[2]">
-          <input type="text" placeholder="Choice 4" v-model="choices[3]">
+          <input type="text" placeholder="Choice 1" v-model="answers[0]">
+          <input type="text" placeholder="Choice 2" v-model="answers[1]">
+          <input type="text" placeholder="Choice 3" v-model="answers[2]">
+          <input type="text" placeholder="Choice 4" v-model="answers[3]">
         </section>
 
         <section class="formAddItemContainer">
@@ -97,7 +97,7 @@ export default {
       message: '',
       quizId: 0,
       question: '',
-      choices: [],
+      answers: [],
       rightAnswer: '',
       jsonBody: '',
       quizes: [],
@@ -173,7 +173,7 @@ export default {
         quiz_id: this.activeQuizId,
         question: this.question,
         correct_answer: this.rightAnswer,
-        answers: [{"answer": this.choices[0]}, {"answer": this.choices[1]}, {"answer": this.choices[2]}, {"answer": this.choices[3]}]
+        answers: [{"answer": this.answers[0]}, {"answer": this.answers[1]}, {"answer": this.answers[2]}, {"answer": this.answers[3]}]
       }
 
       if (this.correctInput) {
@@ -186,7 +186,7 @@ export default {
         })
 
         this.question = ''
-        this.choices = [];
+        this.answers = [];
         this.rightAnswer = ''
         this.message = ''
 
@@ -214,10 +214,10 @@ export default {
       if (this.question === '') {
         this.correctInput = false;
         this.triggerErrorMessage('You need to write a question name.')
-      } else if (!(this.choices.includes(this.rightAnswer))) {
+      } else if (!(this.answers.includes(this.rightAnswer))) {
         this.correctInput = false;
         this.triggerErrorMessage('Right answer does not match any of the choices.')
-      } else if (this.choices.filter(c => c !== '').length < 2) {
+      } else if (this.answers.filter(c => c !== '').length < 2) {
         this.correctInput = false;
         this.triggerErrorMessage('You need at least two choices.')
       } else {
