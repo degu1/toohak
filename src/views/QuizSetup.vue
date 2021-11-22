@@ -37,10 +37,10 @@
         </section>
 
         <section class="formAddItemContainer">
-          <input type="text" placeholder="Choice 1" v-model="choiceOne">
-          <input type="text" placeholder="Choice 2" v-model="choiceTwo">
-          <input type="text" placeholder="Choice 3" v-model="choiceThree">
-          <input type="text" placeholder="Choice 4" v-model="choiceFour">
+          <input type="text" placeholder="Choice 1" v-model="choices[0]">
+          <input type="text" placeholder="Choice 2" v-model="choices[1]">
+          <input type="text" placeholder="Choice 3" v-model="choices[2]">
+          <input type="text" placeholder="Choice 4" v-model="choices[3]">
         </section>
 
         <section class="formAddItemContainer">
@@ -87,18 +87,16 @@ import ErrorMessage from "../components/ErrorMessage";
 import SuccessMessage from "../components/SuccessMessage";
 
 export default {
-  name: "Add Quiz",
+  name: "QuizSetup",
+  components: {SuccessMessage, ErrorMessage},
   data: function () {
 
     return {
+      correctInput: false,
       quizName: '',
       message: '',
       quizId: 0,
       question: '',
-      choiceOne: '',
-      choiceTwo: '',
-      choiceThree: '',
-      choiceFour: '',
       choices: [],
       rightAnswer: '',
       jsonBody: '',
@@ -168,9 +166,6 @@ export default {
           this.triggerErrorMessage("Something went wrong.")
         }
       })
-
-      //this.insertChoices();
-      //this.addNewQuestion();
     },
     addNewQuestion: function () {
 
@@ -178,7 +173,7 @@ export default {
         quiz_id: this.activeQuizId,
         question: this.question,
         correct_answer: this.rightAnswer,
-        answers: [{"answer": this.choiceOne}, {"answer": this.choiceTwo}, {"answer": this.choiceThree}, {"answer": this.choiceFour}]
+        answers: [{"answer": this.choices[0]}, {"answer": this.choices[1]}, {"answer": this.choices[2]}, {"answer": this.choices[3]}]
       }
 
       if (this.correctInput) {
