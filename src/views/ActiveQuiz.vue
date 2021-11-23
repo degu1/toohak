@@ -33,7 +33,7 @@
 
             </li>
             <button v-if="questionIndex<questions.length-1">Next</button>
-            <button v-if="questionIndex===questions.length-1" v-on:click="gradeQuiz">Finish</button>
+            <button v-if="questionIndex===questions.length-1">Finish</button>
           </form>
         </div>
       </div>
@@ -98,8 +98,7 @@ export default {
         });
   },
   methods: {
-    gradeQuiz: function () {
-
+    submitAnswers: function () {
       let jsonBody = JSON.stringify(this.sumOfResults)
 
       fetch('http://127.0.0.1:3000/results/', {
@@ -109,14 +108,13 @@ export default {
       }).then(() => {
         this.triggerSuccessMessage('Thank you for successfully finish the Quiz')
       })
-
     },
     checkAnswer: function (correctAnswer, questionId) {
       let rightOrWrong = 0;
 
-      if(this.userInput === '') {
+      if (this.userInput === '') {
         this.triggerErrorMessage('You need to make a choice.')
-      }else {
+      } else {
         if (correctAnswer === this.userInput) {
           rightOrWrong = 1;
           this.scores[this.questionIndex] = 1;
@@ -132,6 +130,11 @@ export default {
 
         this.questionIndex++;
         this.userInput = '';
+
+        if (this.questions.length === this.sumOfResults.results.length) {
+          this.submitAnswers()
+        }
+
       }
     },
     triggerErrorMessage: function (message) {

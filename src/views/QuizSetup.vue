@@ -175,7 +175,7 @@ export default {
         correct_answer: this.rightAnswer,
         answers: [{"answer": this.answers[0]}, {"answer": this.answers[1]}, {"answer": this.answers[2]}, {"answer": this.answers[3]}]
       }
-
+      console.log(question)
       if (this.correctInput) {
         var jsonQuestion = JSON.stringify(question);
         console.log(jsonQuestion)
