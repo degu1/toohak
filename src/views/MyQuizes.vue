@@ -2,6 +2,7 @@
 
   <main>
     <h1>My Quizes</h1>
+
     <section class="itemContainer">
 
         <ul v-for="quiz of quizes" v-bind:key="quiz.quiz_id" v-on:click="activateQuiz(quiz.quiz_id)">
