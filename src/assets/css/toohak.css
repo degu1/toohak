@@ -409,7 +409,7 @@ p {
 
 #chartContainer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background-color: white;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.16) 2px 3px 6px;
@@ -417,6 +417,7 @@ p {
     margin: 10px;
     padding: 20px 0;
     user-select: none;
+    gap: 20px;
 }
 
 /* Tablet */
@@ -425,6 +426,11 @@ p {
         justify-self: center;
         width: 100%;
         max-width: 700px;
+    }
+
+    #chartContainer {
+        flex-direction: row;
+        gap: 0;
     }
 
     .sideMenu {
