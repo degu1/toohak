@@ -24,16 +24,16 @@
 
           <form id="activeQuestionForm"
                 v-on:submit.prevent="checkAnswer(question.correct_answer, question.question_id, userId)">
-            <li v-for="(choice, cIndex) of choices" v-bind:key="choice.answer_id">
+            <li v-for="(answer, cIndex) of answers" v-bind:key="answer.answer_id">
 
-              <div id="choices" v-if="choice.question_id === question.question_id">
-                <input type="radio" name="answer" v-model="answer" :value="choice.answer" v-bind:id="cIndex">
-                {{ choice.answer }}
+              <div id="choices" v-if="answer.question_id === question.question_id">
+                <input type="radio" name="answer" v-model="userInput" :value="answer.answer" v-bind:id="cIndex">
+                {{ answer.answer }}
               </div>
 
             </li>
             <button v-if="questionIndex<questions.length-1">Next</button>
-            <button v-if="questionIndex===questions.length-1" v-on:click="gradeQuiz">Finish</button>
+            <button v-if="questionIndex===questions.length-1">Finish</button>
           </form>
         </div>
       </div>
@@ -56,8 +56,8 @@ export default {
       questions: [],
       questionIndex: 0,
       activateChoicesAtIndexNum: 0,
-      choices: [],
-      answer: '',
+      answers: [],
+      userInput: '',
       scores: [''],
       sumOfResults: {'user_id': '', 'results': []},
       message: '',
@@ -94,12 +94,11 @@ export default {
         })
         .then((data) => {
           console.log(data.answers);
-          this.choices = data.answers;
+          this.answers = data.answers;
         });
   },
   methods: {
-    gradeQuiz: function () {
-
+    submitAnswers: function () {
       let jsonBody = JSON.stringify(this.sumOfResults)
 
       fetch('http://127.0.0.1:3000/results/', {
@@ -109,15 +108,14 @@ export default {
       }).then(() => {
         this.triggerSuccessMessage('Thank you for successfully finish the Quiz')
       })
-
     },
     checkAnswer: function (correctAnswer, questionId) {
       let rightOrWrong = 0;
 
-      if(this.answer === '') {
+      if (this.userInput === '') {
         this.triggerErrorMessage('You need to make a choice.')
-      }else {
-        if (correctAnswer === this.answer) {
+      } else {
+        if (correctAnswer === this.userInput) {
           rightOrWrong = 1;
           this.scores[this.questionIndex] = 1;
         } else {
@@ -131,7 +129,12 @@ export default {
         }
 
         this.questionIndex++;
-        this.answer = '';
+        this.userInput = '';
+
+        if (this.questions.length === this.sumOfResults.results.length) {
+          this.submitAnswers()
+        }
+
       }
     },
     triggerErrorMessage: function (message) {

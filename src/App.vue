@@ -11,8 +11,8 @@
 
         <section class="sideMenu">
           <section class="welcomeContainer" v-if="this.userId !== ''">
-            <p>Welcome, {{ username }}</p>
-            <button v-on:click="logOut(); burgerMenuClose();">log out</button>
+            <p style="padding: 0">Welcome, {{ username }}</p>
+            <button v-on:click="logOut(); burgerMenuClose();">Log out</button>
           </section>
 
           <router-link v-if="this.userId === ''" to="/"><p v-on:click="burgerMenuClose();">Login/register</p></router-link>
