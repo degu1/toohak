@@ -49,8 +49,9 @@ button {
     font-weight: lighter;
     padding: 10px 20px;
     border-style: none;
-    margin: 10px 30%;
-
+    /*margin: 10px 30%;*/
+    margin-left: auto;
+    margin-right: auto;
     height: 35px;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.16) 2px 3px 6px;
@@ -220,7 +221,7 @@ p {
     padding: 30px;
     background-color: white;
     height: 100vh;
-    width: 60%;
+    width: 40%;
     top: 0;
     right: 0;
     text-align: left;
@@ -259,7 +260,8 @@ p {
 }
 
 .welcomeContainer button {
-    margin: 0 0 10px;
+    margin: 0;
+    margin-bottom: 5px;
     grid-area: button;
     padding-left: 1px;
     padding-right: 1px;
