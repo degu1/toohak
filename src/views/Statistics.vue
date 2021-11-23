@@ -2,6 +2,12 @@
   <main>
     <h1>Statistics</h1>
 
+    <div id="chartContainer" class="itemContainer" v-if="isLoggedIn === 'student'">
+      <DonutChart v-bind:chart-information="passedQuizChart[0]" v-bind:value-one="passedQuizChart[1]" v-bind:value-two="passedQuizChart[2]"></DonutChart>
+      <DonutChart v-bind:chart-information="passedQuestionsChart[0]" v-bind:value-one="passedQuestionsChart[1]"></DonutChart>
+      <DonutChart v-bind:chart-information="completedQuizChart[0]" v-bind:value-one="completedQuizChart[1]"></DonutChart>
+    </div>
+
     <ul class="itemContainer" v-for="result in quizResults" v-bind:key="result.result_id">
       <li v-if="isLoggedIn==='student'">
         <h3>{{ result.quiz_name }}</h3>
@@ -13,9 +19,9 @@
       </li>
     </ul>
 
-    <div class="itemContainer" v-if="isLoggedIn === 'teacher'" >
+    <div class="itemContainer" v-if="isLoggedIn === 'teacher'">
 
-      <ul v-for="c in classes" v-bind:key="c.classes_id"  style=" user-select: none;">
+      <ul v-for="c in classes" v-bind:key="c.classes_id" style=" user-select: none;">
         <p v-on:click="openResultForClass(c.classes_id)" style=" cursor: pointer">{{ c.classes_name }}</p>
 
         <div class="resultsContainer" v-if="activeClass == c.classes_id">
@@ -52,8 +58,11 @@
 </template>
 
 <script>
+import DonutChart from "../components/DonutChart";
+
 export default {
   name: "Statistics",
+  components: {DonutChart},
   degrees: '',
   data: function () {
     return {
@@ -61,6 +70,10 @@ export default {
       classes: [],
       statistics: '',
       activeClass: '',
+      totalAmountOfActiveQuizes: 0,
+      passedQuizChart: ['Quiz passed'],
+      passedQuestionsChart: ['Correct answers'],
+      completedQuizChart: ['Quiz Completed '],
       get isLoggedIn() {
         return localStorage.getItem('role') || '';
       },
@@ -72,6 +85,15 @@ export default {
   mounted() {
     if (this.isLoggedIn === null)
       this.$router.push({name: 'Login/Register'})
+
+    fetch('http://127.0.0.1:3000/quizes/users/' + this.userId)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data.quizes);
+          this.totalAmountOfActiveQuizes = data.quizes.length;
+        });
 
     fetch('http://127.0.0.1:3000/user_statistics/users/' + this.userId)
         .then((response) => {
@@ -88,6 +110,10 @@ export default {
               this.quizResults[i].passed = 'passed'
             }
           }
+          this.passedQuizChart[1] = parseInt((this.quizResults.map(r => r.passed).filter(p => p === 'passed').length / this.quizResults.map(r => r.n_questions).length * 100).toFixed(0))
+          this.passedQuizChart[2] = parseInt((this.quizResults.map(r => r.passed).filter(p => p === 'failed').length / this.quizResults.map(r => r.n_questions).length * 100).toFixed(0))
+          this.passedQuestionsChart[1] = parseInt((this.quizResults.map(r => r.result).reduce(function (a, b) {return a + b;}, 0) / this.quizResults.map(r => r.n_questions).reduce(function (a, b) {return a + b;}, 0) * 100).toFixed(0))
+          this.completedQuizChart[1] = parseInt((this.quizResults.length / this.totalAmountOfActiveQuizes * 100).toFixed(0))
         });
 
     fetch('http://127.0.0.1:3000/classes/')
